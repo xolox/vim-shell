@@ -64,13 +64,12 @@ static char *Failure(char *result)
 __declspec(dllexport)
 char *execute(char *command)
 {
-	/* TODO: Use CREATE_NO_WINDOW and/or DETACHED_PROCESS? */
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&si, sizeof(si));
 	ZeroMemory(&pi, sizeof(pi));
 	si.cb = sizeof(si);
-	if (CreateProcess(0, command, 0, 0, 0, 0, 0, 0, &si, &pi)) {
+	if (CreateProcess(0, command, 0, 0, 0, CREATE_NO_WINDOW, 0, 0, &si, &pi)) {
 		return Success(NULL);
 	} else {
 		return Failure(GetError());
