@@ -13,7 +13,7 @@
 
 let s:script = expand('<sfile>:p:~')
 let s:enoimpl = "%s: %s() hasn't been implemented on your platform! %s"
-let s:contact = "If you have contact, please contact the vim_dev mailing-list or peter@peterodding.com."
+let s:contact = "If you have suggestions, please contact the vim_dev mailing-list or peter@peterodding.com."
 
 function! xolox#shell#openurl(url) " {{{1
   if s:is_windows()

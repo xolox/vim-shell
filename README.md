@@ -1,19 +1,21 @@
 # Improved integration between <br> Vim and its environment
 
 This plug-in aims to improve the integration between [Vim][vim] and its
-environment by providing functions to switch to full-screen, open URLs in the
-user's default web browser and execute external commands in the background
-without opening a command prompt window. A DLL is included to perform these
-things on Windows, while on UNIX external commands are used.
+environment by providing functions to switch to full-screen (see the
+[screenshots][screenshots]), open URLs in the user's default web browser and
+execute external commands in the background without opening a command prompt
+window. A DLL is included to perform these things on Windows, while on UNIX
+external commands are used.
 
 ## Background
 
-A few years ago when I was still using Windows I created a `libcall()`
-compatible [DLL][dll] to toggle [Vim][vim]'s GUI window between regular and
-full-screen mode. I also added a few other useful functions, e.g. `openurl()`
-to launch the default web browser and `execute()` which works like Vim's
-`system()` function but doesn't wait for the process to finish and doesn't open
-a command prompt.
+Vim has a limited ability to call external libraries using the Vim script
+function [libcall()][libcall]. A few years ago when I was still using Windows a
+lot I created a [Windows DLL][dll] that could be used with `libcall()` to
+toggle [Vim][vim]'s GUI window between regular and full-screen mode. I also
+added a few other useful functions, e.g. `openurl()` to launch the default web
+browser and `execute()` which works like Vim's `system()` function but doesn't
+wait for the process to finish and doesn't open a command prompt.
 
 Since then I switched to Linux and didn't look back, which meant the DLL sat in
 my `~/.vim/etc/` waiting to be revived. Now that I've published my
@@ -100,7 +102,9 @@ This software is licensed under the [MIT license] [mit_license].
 [download]: http://peterodding.com/code/vim/download.php?script=shell
 [easytags]: http://www.vim.org/scripts/script.php?script_id=3114
 [github]: http://github.com/xolox/vim-shell
+[libcall]: http://vimdoc.sourceforge.net/htmldoc/eval.html#libcall%28%29
 [makefile]: http://github.com/xolox/vim-shell/blob/master/dll/Makefile
 [mit_license]: http://en.wikipedia.org/wiki/MIT_License
+[screenshots]: http://peterodding.com/code/vim/shell/screenshots
 [vim]: http://www.vim.org/
 [vim_scripts_entry]: http://www.vim.org/scripts/script.php?script_id=3123
