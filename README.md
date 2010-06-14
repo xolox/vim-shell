@@ -65,16 +65,16 @@ testing the three functions as follows from inside Vim:
 
 3. (Windows only) Execute the following command:
 
-        :call xolox#shell#execute('vimrun')
+        :call xolox#shell#execute('vimrun', 0)
 
    Immediately after executing this command Vim should respond to input again
-   because `execute()` doesn't wait for the external command to finish. Also no
-   command prompt window should have been created, which means `vimrun.exe` is
-   running completely invisible in the background. Please verify this: Open the
-   Windows task manager by pressing `Control-Shift-Escape` and check that the
-   process `vimrun.exe` is listed in the processes tab. If you don't see the
-   problem this is solving, try executing `vimrun.exe` using Vim's built-in
-   `system()` function instead:
+   because `execute()` doesn't wait for the external command to finish when the
+   second argument is false. Also no command prompt window should have been
+   created, which means `vimrun.exe` is running completely invisible in the
+   background. Please verify this: Open the Windows task manager by pressing
+   `Control-Shift-Escape` and check that the process `vimrun.exe` is listed in
+   the processes tab. If you don't see the problem this is solving, try
+   executing `vimrun.exe` using Vim's built-in `system()` function instead:
 
         :call system('vimrun')
 
