@@ -44,22 +44,7 @@ me directly at <peter@peterodding.com>. You can test the DLL by unpacking the
 directory (on Windows) or the `~/.vim/` directory (on UNIX), restarting Vim and
 testing the three functions as follows from inside Vim:
 
-1. Execute the following command:
-
-        :call xolox#shell#openurl('http://www.vim.org/')
-
-   Does this open your preferred (or best available) web browser? On UNIX if
-   the environment variable `$DISPLAY` is empty the plug-in will switch to a
-   command-line browser.
-
-2. (Windows only) Execute the following command:
-
-        :call xolox#shell#execute('notepad')
-
-   Does this start Notepad without blocking Vim's window and without opening a
-   command prompt window to run the command?
-
-3. In graphical Vim execute the following command:
+1. In graphical Vim execute the following command:
 
         :call xolox#shell#fullscreen()
 
@@ -67,6 +52,35 @@ testing the three functions as follows from inside Vim:
    return to normal mode by calling the function again. If you're stuck in
    full-screen Vim, save your existing buffers and press `Alt-F4`, that should
    always work.
+
+2. Execute the following command:
+
+        :call xolox#shell#openurl('http://www.vim.org/')
+
+   Does this open your preferred (or best available) web browser? On UNIX if
+   the environment variable `$DISPLAY` is empty the plug-in will switch to a
+   command-line browser.
+
+3. (Windows only) Execute the following command:
+
+        :call xolox#shell#execute('vimrun')
+
+   Immediately after executing this command Vim should respond to input again
+   because `execute()` doesn't wait for the external command to finish. Also no
+   command prompt window should have been created, which means `vimrun.exe` is
+   running completely invisible in the background. Please verify this: Open the
+   Windows task manager by pressing `Control-Shift-Escape` and check that the
+   process `vimrun.exe` is listed in the processes tab. If you don't see the
+   problem this is solving, try executing `vimrun.exe` using Vim's built-in
+   `system()` function instead:
+
+        :call system('vimrun')
+
+   Vim will be completely unresponsive until you "press any key to continue" in
+   the command prompt window that's running `vimrun.exe`. Now of course the
+   `system()` function should only be used with non-interactive programs (the
+   documentation says as much) but my point was to simulate an external command
+   that takes a while to finish and blocks Vim while doing so.
 
 ## Contact
 
