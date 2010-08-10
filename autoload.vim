@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 9, 2010
+" Last Change: August 10, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -142,12 +142,18 @@ function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses 
   endif
 endfunction
 
-function! xolox#shell#execute(command, synchronous) " -- execute external commands asynchronously {{{1
+function! xolox#shell#execute(command, synchronous, ...) " -- execute external commands asynchronously {{{1
   try
     let cmd = a:command
+    let has_input = a:0 > 0
+    if has_input
+      let tempin = tempname()
+      call writefile(type(a:1) == type([]) ? a:1 : split(a:1, "\n"), tempin)
+      let cmd .= ' < ' . shellescape(tempin)
+    endif
     if a:synchronous
-      let tempfile = tempname()
-      let cmd .= ' > ' . shellescape(tempfile) . ' 2>&1'
+      let tempout = tempname()
+      let cmd .= ' > ' . shellescape(tempout) . ' 2>&1'
     endif
     if s:is_windows() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
@@ -165,18 +171,19 @@ function! xolox#shell#execute(command, synchronous) " -- execute external comman
       call s:handle_error(cmd, output)
     endif
     if a:synchronous
-      if !filereadable(tempfile)
+      if !filereadable(tempout)
         let msg = '%s: Failed to execute %s!'
         throw printf(msg, s:script, strtrans(cmd))
       endif
-      let output = readfile(tempfile)
-      call delete(tempfile)
-      return output
+      return readfile(tempout)
     else
       return 1
     endif
   catch
     call xolox#warning("%s: %s at %s", s:script, v:exception, v:throwpoint)
+  finally
+    if exists('tempin') | call delete(tempin) | endif
+    if exists('tempout') | call delete(tempout) | endif
   endtry
 endfunction
 
