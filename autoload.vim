@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 10, 2010
+" Last Change: August 15, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -44,7 +44,8 @@ function! s:open_at_cursor()
       let match = matchstr(line[0 : idx], '\f*$')
       let match .= matchstr(line[idx+1 : -1], '^\f*')
       " Expand leading tilde and/or environment variables in filename?
-      if match =~ '^~' || match =~ '$'
+      if match =~ '^\~' || match =~ '\$'
+        " TODO This can return multiple files?!
         let match = expand(match)
       endif
       if !isdirectory(match) && !filereadable(match)

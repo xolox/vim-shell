@@ -1,9 +1,9 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 10, 2010
+" Last Change: August 15, 2010
 " URL: http://peterodding.com/code/vim/shell/
 " License: MIT
-" Version: 0.7.1
+" Version: 0.7.2
 
 " Support for automatic update using the GLVS plug-in.
 " GetLatestVimScripts: 3123 1 :AutoInstall: shell.zip
