@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 15, 2010
+" Last Change: August 30, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -215,31 +215,16 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
         let msg = "The DLL library %s is missing!"
         throw printf(msg, string(s:library))
       endif
-      call s:library_call('fullscreen', !s:fullscreen_enabled)
+      let error = s:library_call('fullscreen', !s:fullscreen_enabled)
+      if error != ''
+        throw "shell.dll failed with: " . error
+      endif
     elseif has('unix')
       if !executable('wmctrl')
         let msg = "Full-screen on UNIX requires the `wmctrl' program!"
         throw msg . " On Debian/Ubuntu you can install it by executing `sudo apt-get install wmctrl'."
       endif
-      let ts_save = &titlestring
-      try
-        set titlestring=fc3fa0ca4b
-        redraw
-        for line in split(s:execute('wmctrl -l', []), "\n")
-          if line =~ &titlestring
-            let window_id = matchstr(line, '^\S\+')
-            break
-          endif
-        endfor
-      finally
-        let &titlestring = ts_save
-      endtry
-      if exists('window_id') && window_id != ''
-        call s:execute('wmctrl -ir %s -b toggle,fullscreen 2>&1', [window_id])
-      else
-        let title = v:servername != '' ? v:servername : 'vim'
-        call s:execute('wmctrl -r %s -b toggle,fullscreen 2>&1', [title])
-      endif
+      call s:execute('wmctrl -r %s -b toggle,fullscreen 2>&1', [':ACTIVE:'])
     else
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif

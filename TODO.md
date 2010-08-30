@@ -1,6 +1,7 @@
  * Test the `shell.dll` library on as many configurations as possible! (different Windows versions, 32 vs. 64 bit, etc.)
 
- * Bug: On Windows when I enter full-screen for the 1st time it works and I can leave full-screen. But when I then try to enter full-screen a second time (without changing Vim's window state in any way) then it fails to actually toggle the full-screen state on!
+ * **Bug:** On Windows when I enter full-screen for the 1st time it works and I can leave full-screen. But when I then try to enter full-screen a second time (without changing Vim's window state in any way) then it fails to actually toggle the full-screen state on!  
+   **Update:** This might just be a redraw bug in VirtualBox after all?! Vim does switch to full-screen
 
  * Document how to pass standard input to shell commands using xolox#shell#execute().
 
