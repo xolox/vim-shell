@@ -65,19 +65,11 @@ function! xolox#shell#open_url(url) " -- open the given URL in the user's prefer
     if url =~ g:shell_patt_mail && url !~ '^mailto:'
       let url = 'mailto:' . url
     endif
-    if s:is_windows()
-      if s:has_dll()
-        call s:library_call('openurl', url)
-      else
-        call s:execute('CMD /C START "" %s', [url])
-      endif
-      return 1
-    elseif has('macunix')
-      " I don't have OS X available to test this but since `open`
-      " seems such a simple command this should be fine?
-      call s:execute('open %s', [url])
-      return 1
+    if s:is_windows() || has('macunix')
+      " Windows and Mac OS X always have a GUI available.
+      return xolox#shell#open_with(url)
     elseif has('unix')
+      " UNIX doesn't necessarily have a GUI available though.
       if !has('gui_running') && $DISPLAY == ''
         for browser in ['lynx', 'links', 'w3m']
           if executable(browser)
