@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 30, 2010
+" Last Change: September 6, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -117,7 +117,7 @@ function! xolox#shell#open_with(location, ...) " -- generic handler to open file
         if a:location !~ g:shell_patt_url && a:location !~ g:shell_patt_mail
           let location = fnamemodify(location, ':p:~')
         endif
-        call xolox#message("Opening %s with %s", location, handler)
+        call xolox#message("Opening %s with `%s'", location, handler)
         call s:execute('%s %s', [handler, a:location])
         return 1
       endif
