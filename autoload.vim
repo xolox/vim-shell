@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 6, 2010
+" Last Change: September 17, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -13,14 +13,14 @@ endif
 function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
   if a:arg !~ '\S'
     if !s:open_at_cursor()
-      call xolox#shell#open_with(expand('%:p:h'))
+      call xolox#open#shell(expand('%:p:h'))
     endif
   elseif a:arg =~ g:shell_patt_url || a:arg =~ g:shell_patt_mail
-    call xolox#shell#open_url(a:arg)
+    call xolox#open#url(a:arg)
   else
     let arg = fnamemodify(a:arg, ':p')
     if isdirectory(arg) || filereadable(arg)
-      call xolox#shell#open_with(arg)
+      call xolox#open#shell(arg)
     else
       let msg = "%s: I don't know how to open %s!"
       echoerr printf(msg, s:script, string(a:arg))
@@ -37,83 +37,33 @@ function! s:open_at_cursor()
     " Now try to match an e-mail address in <cWORD> because most filenames
     " won't contain an @-sign while e-mail addresses require it.
     let match = matchstr(cWORD, g:shell_patt_mail)
-    if match == ''
-      " As a last resort try to match a filename at the text cursor position.
-      let line = getline('.')
-      let idx = col('.') - 1
-      let match = matchstr(line[0 : idx], '\f*$')
-      let match .= matchstr(line[idx+1 : -1], '^\f*')
-      " Expand leading tilde and/or environment variables in filename?
-      if match =~ '^\~' || match =~ '\$'
-        " TODO This can return multiple files?!
-        let match = expand(match)
-      endif
-      if !isdirectory(match) && !filereadable(match)
-        let match = ''
-      endif
-    endif
   endif
   if match != ''
-    call xolox#shell#open_url(match)
-    return 1
+    call xolox#open#url(match)
+  else
+    " As a last resort try to match a filename at the text cursor position.
+    let line = getline('.')
+    let idx = col('.') - 1
+    let match = matchstr(line[0 : idx], '\f*$')
+    let match .= matchstr(line[idx+1 : -1], '^\f*')
+    " Expand leading tilde and/or environment variables in filename?
+    if match =~ '^\~' || match =~ '\$'
+      " TODO This can return multiple files?!
+      let match = expand(match)
+    endif
+    if match != '' && (isdirectory(match) || filereadable(match))
+      call xolox#open#shell(match)
+    endif
   endif
 endfunction
 
-function! xolox#shell#open_url(url) " -- open the given URL in the user's preferred web browser {{{1
-  try
-    let url = a:url
-    if url =~ g:shell_patt_mail && url !~ '^mailto:'
-      let url = 'mailto:' . url
+function! xolox#shell#open_with_windows_shell(location)
+  if xolox#is_windows() && s:has_dll()
+    let error = s:library_call('openurl', a:location)
+    if error != ''
+      let msg = '%s: Failed to open %s with Windows shell! (error: %s)'
+      throw printf(msg, s:script, string(a:location), strtrans(xolox#trim(error)))
     endif
-    if s:is_windows() || has('macunix')
-      " Windows and Mac OS X always have a GUI available.
-      return xolox#shell#open_with(url)
-    elseif has('unix')
-      " UNIX doesn't necessarily have a GUI available though.
-      if !has('gui_running') && $DISPLAY == ''
-        for browser in ['lynx', 'links', 'w3m']
-          if executable(browser)
-            execute '!' . browser fnameescape(url)
-            return 1
-          endif
-        endfor
-        let msg = "Failed to find command-line web browser. %s"
-        throw printf(msg, s:contact)
-      elseif xolox#shell#open_with(url, 'firefox', 'google-chrome')
-        return 1
-      else
-        let msg = "Failed to find graphical web browser. %s"
-        throw printf(msg, s:contact)
-      endif
-    endif
-    throw printf(s:enoimpl, 'openurl', s:contact)
-  catch
-    call xolox#warning("%s: %s at %s", s:script, v:exception, v:throwpoint)
-  endtry
-endfunction
-
-function! xolox#shell#open_with(location, ...) " -- generic handler to open files in the user's preferred applications {{{1
-  if s:is_windows()
-    if s:has_dll()
-      " A bit of a misnomer: openurl() in shell.dll is implemented using
-      " ShellExecute() which also knows how to open files and directories.
-      call s:library_call('openurl', a:location)
-    else
-      call s:execute('CMD /C START "" %s', [a:location])
-    endif
-    return 1
-  else
-    for handler in g:shell_open_cmds + a:000
-      if executable(handler)
-        let location = a:location
-        if a:location !~ g:shell_patt_url && a:location !~ g:shell_patt_mail
-          let location = fnamemodify(location, ':p:~')
-        endif
-        call xolox#message("Opening %s with `%s'", location, handler)
-        call s:execute('%s %s', [handler, a:location])
-        return 1
-      endif
-    endfor
   endif
 endfunction
 
@@ -148,7 +98,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       let tempout = tempname()
       let cmd .= ' > ' . shellescape(tempout) . ' 2>&1'
     endif
-    if s:is_windows() && s:has_dll()
+    if xolox#is_windows() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
       let cmd = ($COMSPEC != '' ? $COMSPEC : 'CMD.EXE') . ' /C ' . cmd
       let error = s:library_call(fn, cmd)
@@ -160,8 +110,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       if has('unix') && !a:synchronous
         let cmd = '(' . cmd . ') &'
       endif
-      let output = split(system(cmd), "\n")
-      call s:handle_error(cmd, output)
+      call s:handle_error(cmd, system(cmd))
     endif
     if a:synchronous
       if !filereadable(tempout)
@@ -181,6 +130,8 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
 endfunction
 
 function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-screen mode {{{1
+
+  " TODO Wrap in try/catch block with xolox#warning() feedback?
 
   " On entering full-screen hide GUI components like the main menu, tool bar
   " and tab line. Remember which components were actually hidden and should be
@@ -202,11 +153,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
   " Now try to toggle the real full-screen status of Vim's GUI window using a
   " custom dynamic link library on Windows or the "wmctrl" program on UNIX.
   try
-    if s:is_windows()
-      if !s:has_dll()
-        let msg = "The DLL library %s is missing!"
-        throw printf(msg, string(s:library))
-      endif
+    if xolox#is_windows() && s:has_dll()
       let error = s:library_call('fullscreen', !s:fullscreen_enabled)
       if error != ''
         throw "shell.dll failed with: " . error
@@ -216,7 +163,8 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
         let msg = "Full-screen on UNIX requires the `wmctrl' program!"
         throw msg . " On Debian/Ubuntu you can install it by executing `sudo apt-get install wmctrl'."
       endif
-      call s:execute('wmctrl -r %s -b toggle,fullscreen 2>&1', [':ACTIVE:'])
+      let command = 'wmctrl -r :ACTIVE: -b toggle,fullscreen 2>&1'
+      call s:handle_error(command, system(command))
     else
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
@@ -248,23 +196,9 @@ function! xolox#shell#is_fullscreen() " -- check whether Vim is currently in ful
   return s:fullscreen_enabled
 endfunction
 
-function! xolox#shell#build_cmd(cmd, args) " -- create a command-line from a program and its escaped arguments {{{1
-  if a:args == []
-    return a:cmd
-  else
-    let args = map(copy(a:args), 'shellescape(v:val)')
-    call insert(args, a:cmd, 0)
-    return call('printf', args)
-  endif
-endfunction
-
 " Miscellaneous script-local functions. {{{1
 
-function! s:is_windows() " {{{2
-  return has('win32') || has('win64')
-endfunction
-
-if s:is_windows()
+if xolox#is_windows()
 
   let s:library = expand('<sfile>:p:h') . '\shell.dll'
 
@@ -272,51 +206,25 @@ if s:is_windows()
     return libcall(s:library, a:fn, a:arg)
   endfunction
 
-  function! s:find_dll_version() " {{{2
-    try
-      return s:library_call('libversion', '')
-    catch
-      let msg = "%s: Failed to load %s DLL!"
-      let lib = fnamemodify(s:library, ':~')
-      echohl warningmsg
-      echomsg printf(msg, s:script, lib)
-      echohl none
-    endtry
-    return '?'
-  endfunction
-
   function! s:has_dll() " {{{2
-    " Check that the DLL is available using libversion() before calling any of
-    " the other functions. This is only done the first time this plug-in needs
-    " to call the DLL and also makes sure the right version is loaded.
-    if !exists('s:library_version')
-      let s:library_version = s:find_dll_version()
-    endif
-    return s:library_version == '0.2'
+    try
+      return s:library_call('libversion', '') == '0.2'
+    catch
+      return 0
+    endtry
   endfunction
 
 endif
 
-function! s:execute(cmd, args) " {{{2
-  let cmd = xolox#shell#build_cmd(a:cmd, a:args)
-  let output = system(cmd)
-  call s:handle_error(cmd, output)
-  return output
-endfunction
-
 function! s:handle_error(cmd, output) " {{{2
   if v:shell_error
-    if type(a:output) == type([])
-      let output = join(a:output, "\n")
-    else
-      let output = a:output
-    endif
     let msg = "Command %s failed!"
-    if output =~ '^\_s*$'
+    if a:output =~ '^\_s*$'
       throw printf(msg, string(a:cmd))
     else
       let msg .= ' (output: %s)'
-      throw printf(msg, string(a:cmd), strtrans(output))
+      let output = strtrans(xolox#trim(a:output))
+      throw printf(msg, string(a:cmd), )
     endif
   endif
 endfunction

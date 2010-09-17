@@ -4,7 +4,7 @@ This plug-in aims to improve the integration between [Vim][vim] and its environm
 
  * The `:Fullscreen` command and `<F11>` mapping toggle Vim between normal and full-screen mode (see the [screenshots](http://peterodding.com/code/vim/shell/screenshots/)). To invoke this functionality without using the `:Fullscreen` command see the `xolox#shell#fullscreen()` and `xolox#shell#is_fullscreen()` functions.
 
- * The `:Open` command and `<F6>` mapping know how to open file and directory names, URLs and e-mail addresses in your favorite programs (file manager, web browser, e-mail client, etc). To invoke this functionality without using the `:Open` command see the `xolox#shell#open_cmd()` and `xolox#shell#open_with()` functions.
+ * The `:Open` command and `<F6>` mapping know how to open file and directory names, URLs and e-mail addresses in your favorite programs (file manager, web browser, e-mail client, etc). To invoke this functionality without using the `:Open` command see my [open.vim](http://peterodding.com/code/vim/open-external-location/) plug-in, which was split off from `shell.vim` so that other Vim plug-ins can bundle it without bringing in all the other crap.
 
  * The `xolox#shell#execute()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
 

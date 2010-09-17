@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 6, 2010
+" Last Change: September 17, 2010
 " URL: http://peterodding.com/code/vim/shell/
 " License: MIT
 " Version: 0.7.3
@@ -18,12 +18,6 @@ endif
 if !exists('g:shell_fullscreen_items')
   " Change this if :Fullscreen shouldn't hide the menu/toolbar/tabline.
   let g:shell_fullscreen_items = 'mTe'
-endif
-
-if !exists('g:shell_open_cmds')
-  " This is only needed on UNIX, should already support most platforms.
-  let g:shell_open_cmds = ['gnome-open', 'kde-open', 'exo-open', 'xdg-open']
-  if has('macunix') | call insert(g:shell_open_cmds, 'open') | endif
 endif
 
 if !exists('g:shell_hl_exclude')
