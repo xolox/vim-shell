@@ -40,6 +40,7 @@ function! s:open_at_cursor()
   endif
   if match != ''
     call xolox#open#url(match)
+    return 1
   else
     " As a last resort try to match a filename at the text cursor position.
     let line = getline('.')
@@ -52,6 +53,7 @@ function! s:open_at_cursor()
     endif
     if match != '' && (isdirectory(match) || filereadable(match))
       call xolox#open#file(match)
+      return 1
     endif
   endif
 endfunction
