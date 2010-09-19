@@ -48,8 +48,7 @@ function! s:open_at_cursor()
     let match .= matchstr(line[idx+1 : -1], '^\f*')
     " Expand leading tilde and/or environment variables in filename?
     if match =~ '^\~' || match =~ '\$'
-      " TODO This can return multiple files?!
-      let match = expand(match)
+      let match = split(expand(match), "\n")[0]
     endif
     if match != '' && (isdirectory(match) || filereadable(match))
       call xolox#open#file(match)
