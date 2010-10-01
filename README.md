@@ -24,7 +24,7 @@ Note that on UNIX this command even works inside of graphical terminal emulators
 
 ### The `:Open` command
 
-The `:Open` command knows how to open files, directories, URLs and e-mail addresses. It's mapped to `<F6>` by default, see `g:shell_mappings_enabled` if you don't like this). You can provide a filename, URL or e-mail address as argument to the command or if there's a filename, URL or e-mail address under the text cursor that will be used. If both of those fail, the directory containing the current file will be opened. You can use the command as follows:
+The `:Open` command knows how to open files, directories, URLs and e-mail addresses. It's mapped to `<F6>` by default, see `g:shell_mappings_enabled` if you don't like this. You can provide a filename, URL or e-mail address as argument to the command or if there's a filename, URL or e-mail address under the text cursor that will be used. If both of those fail, the directory containing the current file will be opened. You can use the command as follows:
 
     :Open http://www.vim.org/
 
