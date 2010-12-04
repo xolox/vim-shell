@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 19, 2010
+" Last Change: December 4, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -11,21 +11,25 @@ if !exists('s:script')
 endif
 
 function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
-  if a:arg !~ '\S'
-    if !s:open_at_cursor()
-      call xolox#open#file(expand('%:p:h'))
-    endif
-  elseif a:arg =~ g:shell_patt_url || a:arg =~ g:shell_patt_mail
-    call xolox#open#url(a:arg)
-  else
-    let arg = fnamemodify(a:arg, ':p')
-    if isdirectory(arg) || filereadable(arg)
-      call xolox#open#file(arg)
+  try
+    if a:arg !~ '\S'
+      if !s:open_at_cursor()
+        call xolox#open#file(expand('%:p:h'))
+      endif
+    elseif a:arg =~ g:shell_patt_url || a:arg =~ g:shell_patt_mail
+      call xolox#open#url(a:arg)
     else
-      let msg = "%s: I don't know how to open %s!"
-      echoerr printf(msg, s:script, string(a:arg))
+      let arg = fnamemodify(a:arg, ':p')
+      if isdirectory(arg) || filereadable(arg)
+        call xolox#open#file(arg)
+      else
+        let msg = "%s: I don't know how to open %s!"
+        echoerr printf(msg, s:script, string(a:arg))
+      endif
     endif
-  endif
+  catch
+    call xolox#warning("%s at %s", v:exception, v:throwpoint)
+  endtry
 endfunction
 
 function! s:open_at_cursor()
@@ -201,7 +205,8 @@ endfunction
 
 if xolox#is_windows()
 
-  let s:library = expand('<sfile>:p:h') . '\shell.dll'
+  let s:cpu_arch = has('win64') ? 'x64' : 'x86'
+  let s:library = printf('%s\shell-%s.dll', expand('<sfile>:p:h'), s:cpu_arch)
 
   function! s:library_call(fn, arg) " {{{2
     return libcall(s:library, a:fn, a:arg)

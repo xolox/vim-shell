@@ -8,11 +8,11 @@ This plug-in aims to improve the integration between [Vim][vim] and its environm
 
  * The `xolox#shell#execute()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
 
-A [Windows DLL][dll] is included to perform these functions on Windows, while on UNIX external commands are used.
+Two [Windows DLL files][dll] are included to perform these functions on Windows, while on UNIX external commands are used.
 
 ## Usage
 
-The below paragraphs document the functionality in the `shell.vim` plug-in. I'd be very grateful if people would test the plug-in in different environments and report their results by contacting the [vim-dev](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-dev) mailing-list or e-mailing me directly at <peter@peterodding.com>. You can test the DLL by unpacking the [ZIP archive from www.vim.org][download] in the `%USERPROFILE%\vimfiles` directory (on Windows) or the `~/.vim/` directory (on UNIX), restarting Vim and testing the three functions described above and documented below.
+The below paragraphs document the functionality in the `shell.vim` plug-in. I'd be very grateful if people would test the plug-in in different environments and report their results by contacting the [vim-dev](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-dev) mailing-list or e-mailing me directly at <peter@peterodding.com>. You can test the plug-in by unpacking the [ZIP archive from www.vim.org][download] in the `%USERPROFILE%\vimfiles` directory (on Windows) or the `~/.vim/` directory (on UNIX), restarting Vim and checking whether the commands below work as documented.
 
 ### The `:Fullscreen` command
 
@@ -77,7 +77,7 @@ Vim has a limited ability to call external libraries using the Vim script functi
 
 Since then I switched to Linux and didn't look back, which meant the DLL sat in my `~/.vim/etc/` waiting to be revived. Now that I've published my [easytags.vim][easytags] plug-in and put a lot of effort into making it Windows compatible, the `execute()` function from the DLL would be very useful to run [Exuberant Ctags][ctags] in the background without stealing Vim's focus by opening a command prompt window. This is why I've decided to release the DLL. Because I switched to Linux I've also added an autoload script that wraps the DLL on Windows and calls out to external programs such as `wmctrl`, `gnome-open`, `kde-open`, and others on UNIX.
 
-Before I go ahead and bundle the DLL with my [easytags.vim][easytags] plug-in I need to make sure that the DLL is compatible with as many Windows Vim installations out there as possible, e.g. XP/Vista/7, different service packs, 32/64 bits, etc. and I don't know where to start! I've uploaded a [ZIP archive including a compiled DLL][download] to the [Vim scripts page][vim_scripts_entry] for this plug-in (build using the latest Windows SDK but targeting Windows XP x86 DEBUG, should also work on Vista/7) and the source code is available in the [GitHub repository](http://github.com/xolox/vim-shell) (see the `NMAKE` [makefile](http://github.com/xolox/vim-shell/blob/master/dll/Makefile) for compile instructions).
+Before I go ahead and bundle the DLL files with my [easytags.vim][easytags] plug-in I need to make sure they're compatible with as many Windows Vim installations out there as possible, e.g. XP/Vista/7, different service packs, 32/64 bits, etc. I've uploaded a [ZIP archive including two compiled DLL files][download] to the [Vim scripts page][vim_scripts_entry] for this plug-in (build using the latest Windows SDK but targeting Windows XP x86/x64 DEBUG, should also work on Vista/7) and the source code is available in the [GitHub repository](http://github.com/xolox/vim-shell) (see the `NMAKE` [makefile](http://github.com/xolox/vim-shell/blob/master/dll/Makefile) for compile instructions).
 
 ## Other full-screen implementations
 
@@ -85,7 +85,7 @@ After publishing this plug-in I found that the Vim plug-ins [VimTweak](http://ww
 
 ## Contact
 
-If you have questions, bug reports, suggestions, etc. the author can be contacted at <peter@peterodding.com>. The latest version is available at <http://peterodding.com/code/vim/shell/> and <http://github.com/xolox/vim-shell>. If you like the plug-in please vote for it on [www.vim.org] [vim_scripts_entry].
+If you have questions, bug reports, suggestions, etc. the author can be contacted at <peter@peterodding.com>. The latest version is available at <http://peterodding.com/code/vim/shell/> and <http://github.com/xolox/vim-shell>. If you like the plug-in please vote for it on [Vim Online] [vim_scripts_entry].
 
 ## License
 
