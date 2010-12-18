@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: December 4, 2010
+" Last Change: December 18, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -136,12 +136,16 @@ endfunction
 
 function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-screen mode {{{1
 
-  " TODO Wrap in try/catch block with xolox#warning() feedback?
-
-  " On entering full-screen hide GUI components like the main menu, tool bar
-  " and tab line. Remember which components were actually hidden and should be
-  " restored when leaving full-screen later.
+  " When entering full-screen...
   if !s:fullscreen_enabled
+    " Save the window position and size when running Windows, because my
+    " dynamic link library doesn't save/restore them while "wmctrl" does.
+    if xolox#is_windows()
+      let [s:lines_save, s:columns_save] = [&lines, &columns]
+      let [s:winpos_x_save, s:winpos_y_save] = [getwinposx(), getwinposy()]
+    endif
+    " Hide the main menu, tool bar and/or tab line. Remember what was hidden
+    " so its visibility can be restored when the user leaves full-screen.
     let s:go_toggled = ''
     for item in split(g:shell_fullscreen_items, '.\zs')
       if &go =~# item
@@ -177,12 +181,21 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     call xolox#warning("%s: %s at %s", s:script, v:exception, v:throwpoint)
   endtry
 
-  " On leaving full-screen restore display of previously hidden GUI components?
+  " When leaving full-screen...
   if s:fullscreen_enabled
+    " Restore display of previously hidden GUI components?
     let &go .= s:go_toggled
     if exists('s:stal_save')
       let &stal = s:stal_save
       unlet s:stal_save
+    endif
+    unlet s:go_toggled
+    " Restore window position and size only on Windows -- I don't know why
+    " but the following actually breaks when running under "wmctrl"...
+    if xolox#is_windows()
+      let [&lines, &columns] = [s:lines_save, s:columns_save]
+      execute 'winpos' s:winpos_x_save s:winpos_y_save
+      unlet s:lines_save s:columns_save s:winpos_x_save s:winpos_y_save
     endif
   endif
 
@@ -191,6 +204,8 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
 
   " Let the user know how to leave full-screen mode?
   if s:fullscreen_enabled
+    " Take a moment to let Vim's GUI finish redrawing (:redraw is
+    " useless here because it only redraws Vim's internal state).
     sleep 50 m
     call xolox#message("To return from full-screen type <F11> or execute :Fullscreen.")
   endif
