@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: December 18, 2010
+" Last Change: January 27, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -105,7 +105,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     endif
     if xolox#is_windows() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
-      let cmd = ($COMSPEC != '' ? $COMSPEC : 'CMD.EXE') . ' /C ' . cmd
+      let cmd = &shell . ' ' . &shellcmdflag . ' ' . cmd
       let error = s:library_call(fn, cmd)
       if error != ''
         let msg = '%s: %s(%s) failed! (error: %s)'

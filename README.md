@@ -48,6 +48,8 @@ If you want to verify that this function works as described, open the Windows ta
 
 Vim will be completely unresponsive until you "press any key to continue" in the command prompt window that's running [vimrun.exe][vimrun]. Now of course the [system()][system] function should only be used with non-interactive programs (the documentation says as much) but my point was to simulate an external command that takes a while to finish and blocks Vim while doing so.
 
+Note that on Windows this function uses Vim's ['shell'][sh_opt] and ['shellcmdflag'][shcf_opt] options to compose the command line passed to the DLL.
+
 ### The `g:shell_fullscreen_items` option
 
 This variable is a string containing any combination of the following characters:
@@ -99,6 +101,8 @@ This software is licensed under the [MIT license](http://en.wikipedia.org/wiki/M
 [easytags]: http://peterodding.com/code/vim/easytags/
 [gui]: http://vimdoc.sourceforge.net/htmldoc/gui.html#GUI
 [libcall]: http://vimdoc.sourceforge.net/htmldoc/eval.html#libcall()
+[sh_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shell%27
+[shcf_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shellcmdflag%27
 [system]: http://vimdoc.sourceforge.net/htmldoc/eval.html#system()
 [vim]: http://www.vim.org/
 [vim_scripts_entry]: http://www.vim.org/scripts/script.php?script_id=3123
