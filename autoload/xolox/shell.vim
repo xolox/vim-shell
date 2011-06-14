@@ -1,10 +1,10 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: January 27, 2011
+" Last Change: June 14, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
-  let s:script = expand('<sfile>:p:~')
+  let s:script = 'shell.vim'
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
   let s:contact = "If you have suggestions, please contact the vim_dev mailing-list or peter@peterodding.com."
   let s:fullscreen_enabled = 0
@@ -28,7 +28,7 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
       endif
     endif
   catch
-    call xolox#warning("%s at %s", v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("%s at %s", v:exception, v:throwpoint)
   endtry
 endfunction
 
@@ -63,11 +63,11 @@ function! s:open_at_cursor()
 endfunction
 
 function! xolox#shell#open_with_windows_shell(location)
-  if xolox#is_windows() && s:has_dll()
+  if xolox#misc#os#is_win() && s:has_dll()
     let error = s:library_call('openurl', a:location)
     if error != ''
       let msg = '%s: Failed to open %s with Windows shell! (error: %s)'
-      throw printf(msg, s:script, string(a:location), strtrans(xolox#trim(error)))
+      throw printf(msg, s:script, string(a:location), strtrans(xolox#misc#str#trim(error)))
     endif
   endif
 endfunction
@@ -103,7 +103,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       let tempout = tempname()
       let cmd .= ' > ' . shellescape(tempout) . ' 2>&1'
     endif
-    if xolox#is_windows() && s:has_dll()
+    if xolox#misc#os#is_win() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
       let cmd = &shell . ' ' . &shellcmdflag . ' ' . cmd
       let error = s:library_call(fn, cmd)
@@ -127,7 +127,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       return 1
     endif
   catch
-    call xolox#warning("%s: %s at %s", s:script, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("%s: %s at %s", s:script, v:exception, v:throwpoint)
   finally
     if exists('tempin') | call delete(tempin) | endif
     if exists('tempout') | call delete(tempout) | endif
@@ -140,7 +140,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
   if !s:fullscreen_enabled
     " Save the window position and size when running Windows, because my
     " dynamic link library doesn't save/restore them while "wmctrl" does.
-    if xolox#is_windows()
+    if xolox#misc#os#is_win()
       let [s:lines_save, s:columns_save] = [&lines, &columns]
       let [s:winpos_x_save, s:winpos_y_save] = [getwinposx(), getwinposy()]
     endif
@@ -162,7 +162,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
   " Now try to toggle the real full-screen status of Vim's GUI window using a
   " custom dynamic link library on Windows or the "wmctrl" program on UNIX.
   try
-    if xolox#is_windows() && s:has_dll()
+    if xolox#misc#os#is_win() && s:has_dll()
       let error = s:library_call('fullscreen', !s:fullscreen_enabled)
       if error != ''
         throw "shell.dll failed with: " . error
@@ -178,7 +178,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
   catch
-    call xolox#warning("%s: %s at %s", s:script, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("%s: %s at %s", s:script, v:exception, v:throwpoint)
   endtry
 
   " When leaving full-screen...
@@ -192,7 +192,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     unlet s:go_toggled
     " Restore window position and size only on Windows -- I don't know why
     " but the following actually breaks when running under "wmctrl"...
-    if xolox#is_windows()
+    if xolox#misc#os#is_win()
       let [&lines, &columns] = [s:lines_save, s:columns_save]
       execute 'winpos' s:winpos_x_save s:winpos_y_save
       unlet s:lines_save s:columns_save s:winpos_x_save s:winpos_y_save
@@ -207,7 +207,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     " Take a moment to let Vim's GUI finish redrawing (:redraw is
     " useless here because it only redraws Vim's internal state).
     sleep 50 m
-    call xolox#message("To return from full-screen type <F11> or execute :Fullscreen.")
+    call xolox#misc#msg#info("To return from full-screen type <F11> or execute :Fullscreen.")
   endif
 
 endfunction
@@ -218,10 +218,10 @@ endfunction
 
 " Miscellaneous script-local functions. {{{1
 
-if xolox#is_windows()
+if xolox#misc#os#is_win()
 
   let s:cpu_arch = has('win64') ? 'x64' : 'x86'
-  let s:library = printf('%s\shell-%s.dll', expand('<sfile>:p:h'), s:cpu_arch)
+  let s:library = expand('<sfile>:p:h:h:h') . '\misc\shell\shell-' . s:cpu_arch . '.dll'
 
   function! s:library_call(fn, arg) " {{{2
     return libcall(s:library, a:fn, a:arg)
@@ -244,7 +244,7 @@ function! s:handle_error(cmd, output) " {{{2
       throw printf(msg, string(a:cmd))
     else
       let msg .= ' (output: %s)'
-      let output = strtrans(xolox#trim(a:output))
+      let output = strtrans(xolox#misc#str#trim(a:output))
       throw printf(msg, string(a:cmd), )
     endif
   endif
