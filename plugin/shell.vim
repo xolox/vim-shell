@@ -3,7 +3,7 @@
 " Last Change: June 14, 2011
 " URL: http://peterodding.com/code/vim/shell/
 " License: MIT
-" Version: 0.9.3
+" Version: 0.9.4
 
 " Support for automatic update using the GLVS plug-in.
 " GetLatestVimScripts: 3123 1 :AutoInstall: shell.zip
