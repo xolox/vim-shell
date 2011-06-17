@@ -97,7 +97,7 @@ This software is licensed under the [MIT license](http://en.wikipedia.org/wiki/M
 
 [ctags]: http://en.wikipedia.org/wiki/Ctags
 [dll]: http://en.wikipedia.org/wiki/Dynamic-link_library
-[download]: http://peterodding.com/code/vim/downloads/shell
+[download]: http://peterodding.com/code/vim/downloads/shell.zip
 [easytags]: http://peterodding.com/code/vim/easytags/
 [gui]: http://vimdoc.sourceforge.net/htmldoc/gui.html#GUI
 [libcall]: http://vimdoc.sourceforge.net/htmldoc/eval.html#libcall()

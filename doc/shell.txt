@@ -206,7 +206,7 @@ References ~
 [2] http://peterodding.com/code/vim/open-associated-programs/
 [3] http://peterodding.com/code/vim/easytags/
 [4] http://en.wikipedia.org/wiki/Dynamic-link_library
-[5] http://peterodding.com/code/vim/downloads/shell
+[5] http://peterodding.com/code/vim/downloads/shell.zip
 [6] http://en.wikipedia.org/wiki/Taskbar
 [7] http://en.wikipedia.org/wiki/Ctags
 [8] http://www.vim.org/scripts/script.php?script_id=3123
