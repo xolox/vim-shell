@@ -1,12 +1,17 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 17, 2011
+" Last Change: June 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
-" License: MIT
-" Version: 0.9.6
 
 " Support for automatic update using the GLVS plug-in.
 " GetLatestVimScripts: 3123 1 :AutoInstall: shell.zip
+
+" Don't source the plug-in when it's already been loaded or &compatible is set.
+if &cp || exists('g:loaded_shell')
+  finish
+endif
+
+let g:shell_version = '0.9.7'
 
 " Configuration defaults. {{{1
 
@@ -53,5 +58,8 @@ if g:shell_mappings_enabled
   inoremap <F6> <C-o>:Open<CR>
   nnoremap <F6> :Open<CR>
 endif
+
+" Make sure the plug-in is only loaded once.
+let g:loaded_shell = 1
 
 " vim: ts=2 sw=2 et fdm=marker

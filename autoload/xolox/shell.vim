@@ -1,12 +1,11 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 17, 2011
+" Last Change: June 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-if !exists('s:script')
-  let s:script = 'shell.vim'
+if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
-  let s:contact = "If you have suggestions, please contact the vim_dev mailing-list or peter@peterodding.com."
+  let s:contact = "If you have suggestions, please contact peter@peterodding.com."
   let s:fullscreen_enabled = 0
 endif
 
@@ -23,12 +22,12 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
       if isdirectory(arg) || filereadable(arg)
         call xolox#misc#open#file(arg)
       else
-        let msg = "%s: I don't know how to open %s!"
-        echoerr printf(msg, s:script, string(a:arg))
+        let msg = "I don't know how to open '%s'! %s"
+        echoerr printf(msg, a:arg, s:contact)
       endif
     endif
   catch
-    call xolox#misc#msg#warn("%s at %s", v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
   endtry
 endfunction
 
@@ -66,8 +65,8 @@ function! xolox#shell#open_with_windows_shell(location)
   if xolox#misc#os#is_win() && s:has_dll()
     let error = s:library_call('openurl', a:location)
     if error != ''
-      let msg = '%s: Failed to open %s with Windows shell! (error: %s)'
-      throw printf(msg, s:script, string(a:location), strtrans(xolox#misc#str#trim(error)))
+      let msg = "shell.vim %s: Failed to open '%s' with Windows shell! (error: %s)"
+      throw printf(msg, g:shell_version, a:location, strtrans(xolox#misc#str#trim(error)))
     endif
   endif
 endfunction
@@ -128,7 +127,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       return 1
     endif
   catch
-    call xolox#misc#msg#warn("%s: %s at %s", s:script, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
   finally
     if exists('tempin') | call delete(tempin) | endif
     if exists('tempout') | call delete(tempout) | endif
@@ -179,7 +178,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
   catch
-    call xolox#misc#msg#warn("%s: %s at %s", s:script, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
   endtry
 
   " When leaving full-screen...
@@ -208,7 +207,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     " Take a moment to let Vim's GUI finish redrawing (:redraw is
     " useless here because it only redraws Vim's internal state).
     sleep 50 m
-    call xolox#misc#msg#info("To return from full-screen type <F11> or execute :Fullscreen.")
+    call xolox#misc#msg#info("shell.vim %s: To return from full-screen type <F11> or execute :Fullscreen.", g:shell_version)
   endif
 
 endfunction
