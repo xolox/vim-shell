@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 18, 2011
+" Last Change: August 31, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -10,8 +10,6 @@
 if &cp || exists('g:loaded_shell')
   finish
 endif
-
-let g:shell_version = '0.9.7'
 
 " Configuration defaults. {{{1
 
