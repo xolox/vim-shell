@@ -3,7 +3,7 @@
 " Last Change: August 31, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.9'
+let g:xolox#shell#version = '0.9.10'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
