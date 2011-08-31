@@ -3,7 +3,7 @@
 " Last Change: August 31, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.8'
+let g:xolox#shell#version = '0.9.9'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -17,7 +17,7 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
       if !s:open_at_cursor()
         call xolox#misc#open#file(expand('%:p:h'))
       endif
-    elseif a:arg =~ g:shell_patt_url || a:arg =~ g:shell_patt_mail
+    elseif a:arg =~ xolox#shell#url_pattern() || a:arg =~ xolox#shell#mail_pattern()
       call xolox#misc#open#url(a:arg)
     else
       let arg = fnamemodify(a:arg, ':p')
@@ -29,7 +29,7 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
       endif
     endif
   catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
   endtry
 endfunction
 
@@ -37,11 +37,11 @@ function! s:open_at_cursor()
   let cWORD = expand('<cWORD>')
   " Start by trying to match a URL in <cWORD> because URLs can be more-or-less
   " unambiguously distinguished from e-mail addresses and filenames.
-  let match = matchstr(cWORD, g:shell_patt_url)
+  let match = matchstr(cWORD, xolox#shell#url_pattern())
   if match == ''
     " Now try to match an e-mail address in <cWORD> because most filenames
     " won't contain an @-sign while e-mail addresses require it.
-    let match = matchstr(cWORD, g:shell_patt_mail)
+    let match = matchstr(cWORD, xolox#shell#mail_pattern())
   endif
   if match != ''
     call xolox#misc#open#url(match)
@@ -68,13 +68,14 @@ function! xolox#shell#open_with_windows_shell(location)
     let error = s:library_call('openurl', a:location)
     if error != ''
       let msg = "shell.vim %s: Failed to open '%s' with Windows shell! (error: %s)"
-      throw printf(msg, g:shell_version, a:location, strtrans(xolox#misc#str#trim(error)))
+      throw printf(msg, g:xolox#shell#version, a:location, strtrans(xolox#misc#str#trim(error)))
     endif
   endif
 endfunction
 
 function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses embedded in source code comments {{{1
-  if exists('g:syntax_on') && &ft !~ g:shell_hl_exclude
+  " URL highlighting breaks highlighting of <a href="..."> tags in HTML.
+  if exists('g:syntax_on') && &ft !~ xolox#misc#option#get('shell_hl_exclude', '^\(x|ht\)ml$')
     if &ft == 'help'
       let command = 'syntax match %s /%s/'
       let urlgroup = 'HelpURL'
@@ -84,8 +85,8 @@ function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses 
       let urlgroup = 'CommentURL'
       let mailgroup = 'CommentEmail'
     endif
-    execute printf(command, urlgroup, escape(g:shell_patt_url, '/'))
-    execute printf(command, mailgroup, escape(g:shell_patt_mail, '/'))
+    execute printf(command, urlgroup, escape(xolox#shell#url_pattern(), '/'))
+    execute printf(command, mailgroup, escape(xolox#shell#mail_pattern(), '/'))
     execute 'highlight def link' urlgroup 'Underlined'
     execute 'highlight def link' mailgroup 'Underlined'
   endif
@@ -129,7 +130,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       return 1
     endif
   catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
   finally
     if exists('tempin') | call delete(tempin) | endif
     if exists('tempout') | call delete(tempout) | endif
@@ -149,13 +150,14 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     " Hide the main menu, tool bar and/or tab line. Remember what was hidden
     " so its visibility can be restored when the user leaves full-screen.
     let s:go_toggled = ''
-    for item in split(g:shell_fullscreen_items, '.\zs')
+    let fullscreen_items = xolox#misc#option#get('shell_fullscreen_items', 'mTe')
+    for item in split(fullscreen_items, '.\zs')
       if &go =~# item
         let s:go_toggled .= item
         execute 'set go-=' . item
       endif
     endfor
-    if g:shell_fullscreen_items =~# 'e' && &stal != 0
+    if fullscreen_items =~# 'e' && &stal != 0
       let s:stal_save = &stal
       set showtabline=0
     endif
@@ -180,7 +182,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
   catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:shell_version, v:exception, v:throwpoint)
+    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
   endtry
 
   " When leaving full-screen...
@@ -209,13 +211,21 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
     " Take a moment to let Vim's GUI finish redrawing (:redraw is
     " useless here because it only redraws Vim's internal state).
     sleep 50 m
-    call xolox#misc#msg#info("shell.vim %s: To return from full-screen type <F11> or execute :Fullscreen.", g:shell_version)
+    call xolox#misc#msg#info("shell.vim %s: To return from full-screen type <F11> or execute :Fullscreen.", g:xolox#shell#version)
   endif
 
 endfunction
 
 function! xolox#shell#is_fullscreen() " -- check whether Vim is currently in full-screen mode {{{1
   return s:fullscreen_enabled
+endfunction
+
+function! xolox#shell#url_pattern() " -- get the preferred/default pattern to match URLs {{{1
+  return xolox#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\S*\w\)\+[/?#]\?')
+endfunction
+
+function! xolox#shell#mail_pattern() " -- get the preferred/default pattern to match e-mail addresses {{{1
+  return xolox#misc#option#get('shell_patt_mail', '\<\w\{3,}://\(\S*\w\)\+[/?#]\?')
 endfunction
 
 " Miscellaneous script-local functions. {{{1

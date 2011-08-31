@@ -18,24 +18,6 @@ if !exists('g:shell_mappings_enabled')
   let g:shell_mappings_enabled = 1
 endif
 
-if !exists('g:shell_fullscreen_items')
-  " Change this if :Fullscreen shouldn't hide the menu/toolbar/tabline.
-  let g:shell_fullscreen_items = 'mTe'
-endif
-
-if !exists('g:shell_hl_exclude')
-  " URL highlighting breaks highlighting of <a href="..."> tags in HTML.
-  let g:shell_hl_exclude = '^\(x|ht\)ml$'
-endif
-
-if !exists('g:shell_patt_url')
- let g:shell_patt_url = '\<\w\{3,}://\(\S*\w\)\+[/?#]\?'
-endif
-
-if !exists('g:shell_patt_mail')
- let g:shell_patt_mail = '\<\w[^@ \t\r]*\w@\w[^@ \t\r]\+\w\>'
-endif
-
 " Automatic commands. {{{1
 
 augroup PluginShell

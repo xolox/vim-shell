@@ -23,16 +23,8 @@ Two Windows DLL files [4] are included to perform these functions on Windows,
 while on UNIX external commands are used.
 
 ===============================================================================
-                                                                   *shell-usage*
-Usage ~
-
-The below paragraphs document the functionality in the 'shell.vim' plug-in.
-I'd be very grateful if people would test the plug-in in different
-environments and report their results by contacting the |vim-dev| mailing-list
-or e-mailing me directly at peter@peterodding.com. You can test the plug-in by
-unpacking the ZIP archive from www.vim.org [5] in the '%USERPROFILE%\vimfiles'
-directory (on Windows) or the '~/.vim/' directory (on UNIX), restarting Vim
-and checking whether the commands below work as documented.
+                                              *shell-usage-(commands-functions)*
+Usage (commands & functions) ~
 
 -------------------------------------------------------------------------------
 The *:Fullscreen* command
@@ -44,7 +36,7 @@ like this.
 When you enter full-screen mode the main menu, toolbar and tabline are all
 hidden (see |g:shell_fullscreen_items| if you want to change this) and when
 possible Vim's |GUI| window is switched to real full-screen mode (hiding any
-taskbars, panels or docks [6]). When you leave full-screen Vim's main menu,
+taskbars, panels or docks [5]). When you leave full-screen Vim's main menu,
 toolbar and tabline are restored and the |GUI| window is switched back to normal
 mode.
 
@@ -111,6 +103,18 @@ Note that on Windows this function uses Vim's |'shell'| and |'shellcmdflag'|
 options to compose the command line passed to the DLL.
 
 -------------------------------------------------------------------------------
+The *xolox#shell#fullscreen()* function
+
+Call this function to toggle Vim's full screen status. The |:Fullscreen|
+command is just a shorter way to call this function.
+
+-------------------------------------------------------------------------------
+The *xolox#shell#is_fullscreen()* function
+
+Call this function to determine whether Vim is in full screen mode. My
+session.vim plug-in [6] uses this to persist full screen mode.
+
+-------------------------------------------------------------------------------
 The *g:shell_fullscreen_items* option
 
 This variable is a string containing any combination of the following
@@ -123,7 +127,9 @@ characters:
  - 'e': Hide the tabline (see |'go-e'|) when switching to full-screen (this also
    toggles the showtabline option (see |'showtabline'|)).
 
-By default all the above items are hidden in full-screen mode.
+By default all the above items are hidden in full-screen mode. You can also
+set the buffer local variable 'b:shell_fullscreen_items' to change these
+settings for specific buffers.
 
 -------------------------------------------------------------------------------
 The *g:shell_mappings_enabled* option
@@ -166,18 +172,18 @@ Windows and calls out to external programs such as 'wmctrl', 'gnome-open',
 Before I go ahead and bundle the DLL files with my easytags.vim [3] plug-in I
 need to make sure they're compatible with as many Windows Vim installations
 out there as possible, e.g. XP/Vista/7, different service packs, 32/64 bits,
-etc. I've uploaded a ZIP archive including two compiled DLL files [5] to the
-Vim scripts page [8] for this plug-in (build using the latest Windows SDK but
+etc. I've uploaded a ZIP archive including two compiled DLL files [8] to the
+Vim scripts page [9] for this plug-in (build using the latest Windows SDK but
 targeting Windows XP x86/x64 DEBUG, should also work on Vista/7) and the
-source code is available in the GitHub repository [9] (see the 'NMAKE'makefile
-[10] for compile instructions).
+source code is available in the GitHub repository [10] (see the
+'NMAKE'makefile [11] for compile instructions).
 
 ===============================================================================
                                        *shell-other-full-screen-implementations*
 Other full-screen implementations ~
 
-After publishing this plug-in I found that the Vim plug-ins VimTweak [11] and
-gvimfullscreen_win32 [12] also implement full-screen on Windows using a
+After publishing this plug-in I found that the Vim plug-ins VimTweak [12] and
+gvimfullscreen_win32 [13] also implement full-screen on Windows using a
 similar approach as my plug-in. I prefer the effect of my plug-in because it
 seems to hide window decorations more effectively. Also note that my plug-in
 was developed independently of the other two.
@@ -189,13 +195,13 @@ Contact ~
 If you have questions, bug reports, suggestions, etc. the author can be
 contacted at peter@peterodding.com. The latest version is available at
 http://peterodding.com/code/vim/shell/ and http://github.com/xolox/vim-shell.
-If you like the plug-in please vote for it on Vim Online [8].
+If you like the plug-in please vote for it on Vim Online [9].
 
 ===============================================================================
                                                                  *shell-license*
 License ~
 
-This software is licensed under the MIT license [13]. Copyright 2011 Peter
+This software is licensed under the MIT license [14]. Copyright 2011 Peter
 Odding <peter@peterodding.com>.
 
 ===============================================================================
@@ -206,14 +212,15 @@ References ~
 [2] http://peterodding.com/code/vim/open-associated-programs/
 [3] http://peterodding.com/code/vim/easytags/
 [4] http://en.wikipedia.org/wiki/Dynamic-link_library
-[5] http://peterodding.com/code/vim/downloads/shell.zip
-[6] http://en.wikipedia.org/wiki/Taskbar
+[5] http://en.wikipedia.org/wiki/Taskbar
+[6] http://peterodding.com/code/vim/session
 [7] http://en.wikipedia.org/wiki/Ctags
-[8] http://www.vim.org/scripts/script.php?script_id=3123
-[9] http://github.com/xolox/vim-shell
-[10] http://github.com/xolox/vim-shell/blob/master/dll/Makefile
-[11] http://www.vim.org/scripts/script.php?script_id=687
-[12] http://www.vim.org/scripts/script.php?script_id=2596
-[13] http://en.wikipedia.org/wiki/MIT_License
+[8] http://peterodding.com/code/vim/downloads/shell.zip
+[9] http://www.vim.org/scripts/script.php?script_id=3123
+[10] http://github.com/xolox/vim-shell
+[11] http://github.com/xolox/vim-shell/blob/master/dll/Makefile
+[12] http://www.vim.org/scripts/script.php?script_id=687
+[13] http://www.vim.org/scripts/script.php?script_id=2596
+[14] http://en.wikipedia.org/wiki/MIT_License
 
 vim: ft=help

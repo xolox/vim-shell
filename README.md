@@ -10,9 +10,7 @@ This plug-in aims to improve the integration between [Vim][vim] and its environm
 
 Two [Windows DLL files][dll] are included to perform these functions on Windows, while on UNIX external commands are used.
 
-## Usage
-
-The below paragraphs document the functionality in the `shell.vim` plug-in. I'd be very grateful if people would test the plug-in in different environments and report their results by contacting the [vim-dev](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-dev) mailing-list or e-mailing me directly at <peter@peterodding.com>. You can test the plug-in by unpacking the [ZIP archive from www.vim.org][download] in the `%USERPROFILE%\vimfiles` directory (on Windows) or the `~/.vim/` directory (on UNIX), restarting Vim and checking whether the commands below work as documented.
+## Usage (commands & functions)
 
 ### The `:Fullscreen` command
 
@@ -50,6 +48,14 @@ Vim will be completely unresponsive until you "press any key to continue" in the
 
 Note that on Windows this function uses Vim's ['shell'][sh_opt] and ['shellcmdflag'][shcf_opt] options to compose the command line passed to the DLL.
 
+### The `xolox#shell#fullscreen()` function
+
+Call this function to toggle Vim's full screen status. The `:Fullscreen` command is just a shorter way to call this function.
+
+### The `xolox#shell#is_fullscreen()` function
+
+Call this function to determine whether Vim is in full screen mode. My [session.vim plug-in](http://peterodding.com/code/vim/session) uses this to persist full screen mode.
+
 ### The `g:shell_fullscreen_items` option
 
 This variable is a string containing any combination of the following characters:
@@ -58,7 +64,7 @@ This variable is a string containing any combination of the following characters
  * `T`: Hide the [toolbar](http://vimdoc.sourceforge.net/htmldoc/options.html#%27go-T%27) when switching to full-screen;
  * `e`: Hide the [tabline](http://vimdoc.sourceforge.net/htmldoc/options.html#%27go-e%27) when switching to full-screen (this also toggles the [showtabline option](http://vimdoc.sourceforge.net/htmldoc/options.html#%27showtabline%27)).
 
-By default all the above items are hidden in full-screen mode.
+By default all the above items are hidden in full-screen mode. You can also set the buffer local variable `b:shell_fullscreen_items` to change these settings for specific buffers.
 
 ### The `g:shell_mappings_enabled` option
 
