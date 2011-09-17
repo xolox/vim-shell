@@ -8,6 +8,10 @@ This plug-in aims to improve the integration between Vim and its environment
    without using the |:Fullscreen| command see the 'xolox#shell#fullscreen()'
    and 'xolox#shell#is_fullscreen()' functions.
 
+ - The |:Maximize| command and '<Control-F11>' mapping toggle Vim between
+   normal and maximized state: They show/hide Vim's menu bar, tool bar and/or
+   tab line without hiding the operating system task bar.
+
  - The |:Open| command and '<F6>' mapping know how to open file and directory
    names, URLs and e-mail addresses in your favorite programs (file manager,
    web browser, e-mail client, etc). To invoke this functionality without
@@ -27,18 +31,22 @@ while on UNIX external commands are used.
 Usage (commands & functions) ~
 
 -------------------------------------------------------------------------------
+The *:Maximize* command
+
+This command toggles the visibility of Vim's main menu, tool bar and/or tab
+line. It's mapped to '<Control-F11>' by default, see |g:shell_mappings_enabled|
+if you don't like this. If you want to change which items are hidden see the
+|g:shell_fullscreen_items| option.
+
+-------------------------------------------------------------------------------
 The *:Fullscreen* command
 
 The |:Fullscreen| command toggles Vim between normal and full-screen mode [1].
 It's mapped to '<F11>' by default, see |g:shell_mappings_enabled| if you don't
-like this.
-
-When you enter full-screen mode the main menu, toolbar and tabline are all
-hidden (see |g:shell_fullscreen_items| if you want to change this) and when
-possible Vim's |GUI| window is switched to real full-screen mode (hiding any
-taskbars, panels or docks [5]). When you leave full-screen Vim's main menu,
-toolbar and tabline are restored and the |GUI| window is switched back to normal
-mode.
+like this. This command first executes |:Maximize| and then (if possible)
+switches Vim's |GUI| window to real full-screen mode (hiding any taskbars,
+panels or docks [5]). When you leave full-screen Vim's main menu, toolbar and
+tabline are restored and the |GUI| window is switched back to normal mode.
 
 Note that on UNIX this command even works inside of graphical terminal
 emulators like 'gnome-terminal' or 'xterm' (try it out!).

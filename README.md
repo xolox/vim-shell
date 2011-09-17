@@ -4,6 +4,8 @@ This plug-in aims to improve the integration between [Vim][vim] and its environm
 
  * The `:Fullscreen` command and `<F11>` mapping toggle Vim between normal and full-screen mode (see the [screenshots](http://peterodding.com/code/vim/shell/screenshots/)). To invoke this functionality without using the `:Fullscreen` command see the `xolox#shell#fullscreen()` and `xolox#shell#is_fullscreen()` functions.
 
+   * The `:Maximize` command and `<Control-F11>` mapping toggle Vim between normal and maximized state: They show/hide Vim's menu bar, tool bar and/or tab line without hiding the operating system task bar.
+
  * The `:Open` command and `<F6>` mapping know how to open file and directory names, URLs and e-mail addresses in your favorite programs (file manager, web browser, e-mail client, etc). To invoke this functionality without using the `:Open` command see my [open.vim](http://peterodding.com/code/vim/open-associated-programs/) plug-in, which was split off from `shell.vim` so that other Vim plug-ins can bundle it without bringing in all the other crap :-).
 
  * The `xolox#shell#execute()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
@@ -12,11 +14,13 @@ Two [Windows DLL files][dll] are included to perform these functions on Windows,
 
 ## Usage (commands & functions)
 
+### The `:Maximize` command
+
+This command toggles the visibility of Vim's main menu, tool bar and/or tab line. It's mapped to `<Control-F11>` by default, see `g:shell_mappings_enabled` if you don't like this. If you want to change which items are hidden see the `g:shell_fullscreen_items` option.
+
 ### The `:Fullscreen` command
 
-The `:Fullscreen` command toggles Vim between normal and [full-screen mode](http://peterodding.com/code/vim/shell/screenshots/). It's mapped to `<F11>` by default, see `g:shell_mappings_enabled` if you don't like this.
-
-When you enter full-screen mode the main menu, toolbar and tabline are all hidden (see `g:shell_fullscreen_items` if you want to change this) and when possible Vim's [GUI window] [gui] is switched to real full-screen mode (hiding any [taskbars, panels or docks](http://en.wikipedia.org/wiki/Taskbar)). When you leave full-screen Vim's main menu, toolbar and tabline are restored and the [GUI window] [gui] is switched back to normal mode.
+The `:Fullscreen` command toggles Vim between normal and [full-screen mode](http://peterodding.com/code/vim/shell/screenshots/). It's mapped to `<F11>` by default, see `g:shell_mappings_enabled` if you don't like this. This command first executes `:Maximize` and then (if possible) switches Vim's [GUI window] [gui] to real full-screen mode (hiding any [taskbars, panels or docks](http://en.wikipedia.org/wiki/Taskbar)). When you leave full-screen Vim's main menu, toolbar and tabline are restored and the [GUI window] [gui] is switched back to normal mode.
 
 Note that on UNIX this command even works inside of graphical terminal emulators like `gnome-terminal` or `xterm` (try it out!).
 

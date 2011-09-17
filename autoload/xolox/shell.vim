@@ -1,14 +1,15 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 4, 2011
+" Last Change: September 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.11'
+let g:xolox#shell#version = '0.9.12'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
   let s:contact = "If you have suggestions, please contact peter@peterodding.com."
   let s:fullscreen_enabled = 0
+  let s:maximized = 0
 endif
 
 function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
@@ -137,16 +138,9 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
   endtry
 endfunction
 
-function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-screen mode {{{1
-
-  " When entering full-screen...
-  if !s:fullscreen_enabled
-    " Save the window position and size when running Windows, because my
-    " dynamic link library doesn't save/restore them while "wmctrl" does.
-    if xolox#misc#os#is_win()
-      let [s:lines_save, s:columns_save] = [&lines, &columns]
-      let [s:winpos_x_save, s:winpos_y_save] = [getwinposx(), getwinposy()]
-    endif
+function! xolox#shell#maximize(...) " -- show/hide Vim's menu, tool bar and/or tab line {{{1
+  let new_state = a:0 == 0 ? !s:maximized : a:1
+  if new_state && !s:maximized
     " Hide the main menu, tool bar and/or tab line. Remember what was hidden
     " so its visibility can be restored when the user leaves full-screen.
     let s:go_toggled = ''
@@ -161,6 +155,31 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
       let s:stal_save = &stal
       set showtabline=0
     endif
+    let s:maximized = 1
+  elseif s:maximized && !new_state
+    " Restore display of previously hidden GUI components?
+    let &go .= s:go_toggled
+    if exists('s:stal_save')
+      let &stal = s:stal_save
+      unlet s:stal_save
+    endif
+    unlet s:go_toggled
+    let s:maximized = 0
+  endif
+  return s:maximized
+endfunction
+
+function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-screen mode {{{1
+
+  " When entering full-screen...
+  if !s:fullscreen_enabled
+    " Save the window position and size when running Windows, because my
+    " dynamic link library doesn't save/restore them while "wmctrl" does.
+    if xolox#misc#os#is_win()
+      let [s:lines_save, s:columns_save] = [&lines, &columns]
+      let [s:winpos_x_save, s:winpos_y_save] = [getwinposx(), getwinposy()]
+    endif
+    call xolox#shell#maximize(1)
   endif
 
   " Now try to toggle the real full-screen status of Vim's GUI window using a
@@ -187,13 +206,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
 
   " When leaving full-screen...
   if s:fullscreen_enabled
-    " Restore display of previously hidden GUI components?
-    let &go .= s:go_toggled
-    if exists('s:stal_save')
-      let &stal = s:stal_save
-      unlet s:stal_save
-    endif
-    unlet s:go_toggled
+    call xolox#shell#maximize(0)
     " Restore window position and size only on Windows -- I don't know why
     " but the following actually breaks when running under "wmctrl"...
     if xolox#misc#os#is_win()

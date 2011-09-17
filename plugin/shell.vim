@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 31, 2011
+" Last Change: September 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -28,15 +28,18 @@ augroup END
 " Regular commands. {{{1
 
 command! -bar -nargs=? -complete=file Open call xolox#shell#open_cmd(<q-args>)
+command! -bar Maximize call xolox#shell#maximize()
 command! -bar Fullscreen call xolox#shell#fullscreen()
 
 " Default key mappings. {{{1
 
 if g:shell_mappings_enabled
-  inoremap <F11> <C-o>:Fullscreen<CR>
-  nnoremap <F11> :Fullscreen<CR>
   inoremap <F6> <C-o>:Open<CR>
   nnoremap <F6> :Open<CR>
+  inoremap <F11> <C-o>:Fullscreen<CR>
+  nnoremap <F11> :Fullscreen<CR>
+  inoremap <C-F11> <C-o>:Maximize<CR>
+  nnoremap <C-F11> :Maximize<CR>
 endif
 
 " Make sure the plug-in is only loaded once.
