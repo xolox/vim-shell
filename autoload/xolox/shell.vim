@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 18, 2011
+" Last Change: September 26, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.12'
+let g:xolox#shell#version = '0.9.13'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
