@@ -3,7 +3,7 @@
 " Last Change: September 27, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.14'
+let g:xolox#shell#version = '0.9.15'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -18,7 +18,7 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
       if !s:open_at_cursor()
         call xolox#misc#open#file(expand('%:p:h'))
       endif
-    elseif a:arg =~ xolox#shell#url_pattern() || a:arg =~ xolox#shell#mail_pattern()
+    elseif (a:arg =~ xolox#shell#url_pattern()) || (a:arg =~ xolox#shell#mail_pattern())
       call xolox#misc#open#url(a:arg)
     else
       let arg = fnamemodify(a:arg, ':p')
