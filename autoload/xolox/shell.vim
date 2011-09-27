@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 26, 2011
+" Last Change: September 27, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.13'
+let g:xolox#shell#version = '0.9.14'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -238,7 +238,7 @@ function! xolox#shell#url_pattern() " -- get the preferred/default pattern to ma
 endfunction
 
 function! xolox#shell#mail_pattern() " -- get the preferred/default pattern to match e-mail addresses {{{1
-  return xolox#misc#option#get('shell_patt_mail', '\<\w\{3,}://\(\S*\w\)\+[/?#]\?')
+  return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r]*\w@\w[^@ \t\r]\+\w\>')
 endfunction
 
 " Miscellaneous script-local functions. {{{1
