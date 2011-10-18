@@ -3,7 +3,7 @@
 " Last Change: October 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.16'
+let g:xolox#shell#version = '0.9.17'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -122,6 +122,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     if xolox#misc#os#is_win() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
       let cmd = &shell . ' ' . &shellcmdflag . ' ' . cmd
+      call xolox#misc#msg#debug("shell.vim %s: Executing %s using compiled DLL.", g:xolox#shell#version, cmd)
       let error = s:library_call(fn, cmd)
       if error != ''
         let msg = '%s(%s) failed! (error: %s)'
@@ -131,6 +132,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       if has('unix') && !a:synchronous
         let cmd = '(' . cmd . ') &'
       endif
+      call xolox#misc#msg#debug("shell.vim %s: Executing %s using system().", g:xolox#shell#version, cmd)
       call s:handle_error(cmd, system(cmd))
     endif
     if a:synchronous
