@@ -83,6 +83,12 @@ Since no mappings will be defined now you can add something like the following t
     :inoremap <Leader>op <C-o>:Open<CR>
     :nnoremap <Leader>op :Open<CR>
 
+### The `g:shell_verify_urls` option
+
+When you use the `:Open` command or the `<F6>` mapping to open the URL under the text cursor, the shell plug-in uses a regular expression to guess where the URL starts and ends. This works 99% percent of the time but it can break, because in this process the shell plug-in will strip trailing punctuation characters like dots (because they were likely not intended to be included in the URL).
+
+If you actually deal with URLs that include significant trailing punctuation and your Vim is compiled with Python support you can enable the option `g:shell_verify_urls` (by setting it to 1 in your [vimrc script] [vimrc]). When you do this the plug-in will perform an HTTP HEAD request on the URL without stripping trailing punctuation. If the request returns an HTTP status code that indicates some form of success (the status code is at least 200 and less than 400) the URL including trailing punctuation is opened. If the HEAD request fails the plug-in will try again without trailing punctuation.
+
 ## Background
 
 Vim has a limited ability to call external libraries using the Vim script function [libcall()][libcall]. A few years ago when I was still using Windows a lot I created a [Windows DLL][dll] that could be used with [libcall()][libcall] to toggle [Vim][vim]'s GUI window between regular and full-screen mode. I also added a few other useful functions, e.g. `openurl()` to launch the default web browser and `execute()` which works like Vim's [system()][system] function but doesn't wait for the process to finish and doesn't show a command prompt.

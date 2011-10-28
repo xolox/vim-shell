@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: October 18, 2011
+" Last Change: October 28, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.17'
+let g:xolox#shell#version = '0.9.18'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -14,17 +14,22 @@ endif
 
 function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
   try
+    " No argument?
     if a:arg !~ '\S'
+      " Filename, URL or e-mail address at text cursor location?
       if !s:open_at_cursor()
+        " Open the directory of the current buffer.
         let bufdir = expand('%:p:h')
         call xolox#misc#msg#debug("shell.vim %s: Opening directory of current buffer '%s'.", g:xolox#shell#version, bufdir)
         call xolox#misc#open#file(bufdir)
       endif
     elseif (a:arg =~ xolox#shell#url_pattern()) || (a:arg =~ xolox#shell#mail_pattern())
+      " Open the URL or e-mail address given as an argument.
       call xolox#misc#msg#debug("shell.vim %s: Opening URL or e-mail address '%s'.", g:xolox#shell#version, a:arg)
       call xolox#misc#open#url(a:arg)
     else
       let arg = fnamemodify(a:arg, ':p')
+      " Does the argument point to an existing file or directory?
       if isdirectory(arg) || filereadable(arg)
         call xolox#misc#msg#debug("shell.vim %s: Opening valid filename '%s'.", g:xolox#shell#version, arg)
         call xolox#misc#open#file(arg)
@@ -42,7 +47,11 @@ function! s:open_at_cursor()
   let cWORD = expand('<cWORD>')
   " Start by trying to match a URL in <cWORD> because URLs can be more-or-less
   " unambiguously distinguished from e-mail addresses and filenames.
-  let match = matchstr(cWORD, xolox#shell#url_pattern())
+  if g:shell_verify_urls && cWORD =~ '^\(http\|https\)://.\{-}[[:punct:]]$' && xolox#shell#url_exists(cWORD)
+    let match = cWORD
+  else
+    let match = matchstr(cWORD, xolox#shell#url_pattern())
+  endif
   if match != ''
     call xolox#misc#msg#debug("shell.vim %s: Matched URL '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
   else
@@ -246,6 +255,54 @@ endfunction
 
 function! xolox#shell#is_fullscreen() " -- check whether Vim is currently in full-screen mode {{{1
   return s:fullscreen_enabled
+endfunction
+
+function! xolox#shell#url_exists(url) " -- check whether a URL points to an existing resource (using Python) {{{1
+  try
+    " Embedding Python code in Vim scripts is always a bit awkward :-(
+    " (because of the forced indentation thing Python insists on).
+    let starttime = xolox#misc#timer#start()
+python <<EOF
+
+# Standard library modules.
+import httplib
+import urlparse
+
+# Only loaded inside the Python interface to Vim.
+import vim
+
+# We need to define a function to enable redirection implemented through recursion.
+
+def shell_url_exists(absolute_url, rec=0):
+  assert rec <= 10
+  components = urlparse.urlparse(absolute_url)
+  netloc = components.netloc.split(':', 1)
+  if components.scheme == 'http':
+    connection = httplib.HTTPConnection(*netloc)
+  elif components.scheme == 'https':
+    connection = httplib.HTTPSConnection(*netloc)
+  else:
+    assert False, "Unsupported URL scheme"
+  relative_url = urlparse.urlunparse(('', '') + components[2:])
+  connection.request('HEAD', relative_url)
+  response = connection.getresponse()
+  if 300 <= response.status < 400:
+    for name, value in response.getheaders():
+      if name.lower() == 'location':
+        shell_url_exists(value.strip(), rec+1)
+        break
+  else:
+    assert 200 <= response.status < 400
+
+shell_url_exists(vim.eval('a:url'))
+
+EOF
+    call xolox#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it does).", g:xolox#shell#version, starttime, a:url)
+    return 1
+  catch
+    call xolox#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it doesn't).", g:xolox#shell#version, starttime, a:url)
+    return 0
+  endtry
 endfunction
 
 function! xolox#shell#url_pattern() " -- get the preferred/default pattern to match URLs {{{1

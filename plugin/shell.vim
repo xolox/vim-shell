@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 18, 2011
+" Last Change: October 28, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -16,6 +16,13 @@ endif
 if !exists('g:shell_mappings_enabled')
   " Set this to false (0) if you don't like the default mappings.
   let g:shell_mappings_enabled = 1
+endif
+
+if !exists('g:shell_verify_urls')
+  " Set this to true if your URLs include significant trailing punctuation and
+  " your Vim is compiled with Python support. XXX In this case the shell
+  " plug-in will perform HTTP HEAD requests on your behalf.
+  let g:shell_verify_urls = 0
 endif
 
 " Automatic commands. {{{1
