@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: October 28, 2011
+" Last Change: October 29, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.18'
+let g:xolox#shell#version = '0.9.20'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -122,11 +122,11 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     if has_input
       let tempin = tempname()
       call writefile(type(a:1) == type([]) ? a:1 : split(a:1, "\n"), tempin)
-      let cmd .= ' < ' . shellescape(tempin)
+      let cmd .= ' < ' . xolox#shell#escape(tempin)
     endif
     if a:synchronous
       let tempout = tempname()
-      let cmd .= ' > ' . shellescape(tempout) . ' 2>&1'
+      let cmd .= ' > ' . xolox#shell#escape(tempout) . ' 2>&1'
     endif
     if xolox#misc#os#is_win() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
@@ -160,6 +160,20 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     if exists('tempin') | call delete(tempin) | endif
     if exists('tempout') | call delete(tempout) | endif
   endtry
+endfunction
+
+function! xolox#shell#escape(argument) " -- quote command line arguments {{{1
+  if xolox#misc#os#is_win()
+    try
+      let ssl_save = &shellslash
+      set noshellslash
+      return shellescape(a:argument)
+    finally
+      let &shellslash = ssl_save
+    endtry
+  else
+    return shellescape(a:argument)
+  endif
 endfunction
 
 function! xolox#shell#maximize(...) " -- show/hide Vim's menu, tool bar and/or tab line {{{1
