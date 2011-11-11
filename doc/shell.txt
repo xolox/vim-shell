@@ -201,9 +201,9 @@ need to make sure they're compatible with as many Windows Vim installations
 out there as possible, e.g. XP/Vista/7, different service packs, 32/64 bits,
 etc. I've uploaded a ZIP archive including two compiled DLL files [8] to the
 Vim scripts page [9] for this plug-in (build using the latest Windows SDK but
-targeting Windows XP x86/x64 DEBUG, should also work on Vista/7) and the
-source code is available in the GitHub repository [10] (see the
-'NMAKE'makefile [11] for compile instructions).
+targeting Windows XP x86/x64 RELEASE, should also work on Vista/7) and the
+source code is available in the GitHub repository [10] (there's also a Batch
+script [11] with compile instructions).
 
 ===============================================================================
                                        *shell-other-full-screen-implementations*
