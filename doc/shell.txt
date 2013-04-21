@@ -1,5 +1,29 @@
 *shell.txt*  Improved integration between Vim and its environment
 
+===============================================================================
+                                                                *shell-contents*
+Contents ~
+
+ 1. Introduction                                            |shell-introduction|
+ 2. Usage (commands & functions)              |shell-usage-(commands-functions)|
+  1. The |:Maximize| command
+  2. The |:Fullscreen| command
+  3. The |:Open| command
+  4. The |xolox#shell#execute()| function
+  5. The |xolox#shell#fullscreen()| function
+  6. The |xolox#shell#is_fullscreen()| function
+  7. The |g:shell_fullscreen_items| option
+  8. The |g:shell_mappings_enabled| option
+  9. The |g:shell_verify_urls| option
+ 3. Background                                                |shell-background|
+ 4. Other full-screen implementations  |shell-other-full-screen-implementations|
+ 5. Contact                                                      |shell-contact|
+ 6. License                                                      |shell-license|
+
+===============================================================================
+                                                            *shell-introduction*
+Introduction ~
+
 This plug-in aims to improve the integration between Vim and its environment
 (your operating system) by providing the following functionality:
 
@@ -228,7 +252,7 @@ If you like the plug-in please vote for it on Vim Online [9].
                                                                  *shell-license*
 License ~
 
-This software is licensed under the MIT license [14]. Copyright 2011 Peter
+This software is licensed under the MIT license [14]. Copyright 2013 Peter
 Odding <peter@peterodding.com>.
 
 ===============================================================================

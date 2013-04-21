@@ -1,9 +1,11 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: November 26, 2011
+" Last Change: April 21, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.23'
+let g:xolox#shell#version = '0.9.24'
+
+call xolox#misc#compat#check('shell', 1)
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -104,7 +106,7 @@ function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses 
       let urlgroup = 'HelpURL'
       let mailgroup = 'HelpEmail'
     else
-      let command = 'syntax match %s /%s/ contained containedin=.*Comment.*'
+      let command = 'syntax match %s /%s/ contained containedin=.*Comment.*,.*String.*'
       let urlgroup = 'CommentURL'
       let mailgroup = 'CommentEmail'
     endif
@@ -306,11 +308,11 @@ EOF
 endfunction
 
 function! xolox#shell#url_pattern() " -- get the preferred/default pattern to match URLs {{{1
-  return xolox#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\S*\w\)\+[/?#]\?')
+  return xolox#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\(\S\&[^"]\)*\w\)\+[/?#]\?')
 endfunction
 
 function! xolox#shell#mail_pattern() " -- get the preferred/default pattern to match e-mail addresses {{{1
-  return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r]*\w@\w[^@ \t\r]\+\w\>')
+  return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r<>]*\w@\w[^@ \t\r<>]\+\w\>')
 endfunction
 
 " Miscellaneous script-local functions. {{{1
