@@ -36,6 +36,10 @@ This will launch your preferred (or the best available) web browser. Likewise th
 
 Note that on UNIX if the environment variable `$DISPLAY` is empty the plug-in will fall back to a command-line web browser. Because such web browsers are executed in front of Vim you have to quit the web browser to return to Vim.
 
+### The `:MakeWithShell` command
+
+This command is a very simple replacement for the [:make][make] command that does not pop up a console window on Windows. It doesn't come with all of the bells and whistles that Vim's built-in make command does but it should work.
+
 ### The `xolox#shell#execute()` function
 
 This function enables other Vim plug-ins to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*. For example try to execute the following command on Windows ([vimrun.exe][vimrun] is only included with Vim for Windows because it isn't needed on other platforms):
@@ -117,6 +121,7 @@ This software is licensed under the [MIT license](http://en.wikipedia.org/wiki/M
 [easytags]: http://peterodding.com/code/vim/easytags/
 [gui]: http://vimdoc.sourceforge.net/htmldoc/gui.html#GUI
 [libcall]: http://vimdoc.sourceforge.net/htmldoc/eval.html#libcall()
+[make]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:make
 [sh_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shell%27
 [shcf_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shellcmdflag%27
 [system]: http://vimdoc.sourceforge.net/htmldoc/eval.html#system()

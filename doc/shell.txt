@@ -9,12 +9,14 @@ Contents ~
   1. The |:Maximize| command
   2. The |:Fullscreen| command
   3. The |:Open| command
-  4. The |xolox#shell#execute()| function
-  5. The |xolox#shell#fullscreen()| function
-  6. The |xolox#shell#is_fullscreen()| function
-  7. The |g:shell_fullscreen_items| option
-  8. The |g:shell_mappings_enabled| option
-  9. The |g:shell_verify_urls| option
+  4. The |:MakeWithShell| command
+  5. The |xolox#shell#execute()| function
+  6. The |xolox#shell#fullscreen()| function
+  7. The |xolox#shell#is_fullscreen()| function
+  8. The |g:shell_fullscreen_items| option
+  9. The |g:shell_mappings_enabled| option
+  10. The |g:shell_make_override| option
+  11. The |g:shell_verify_urls| option
  3. Background                                                |shell-background|
  4. Other full-screen implementations  |shell-other-full-screen-implementations|
  5. Contact                                                      |shell-contact|
@@ -99,6 +101,13 @@ will fall back to a command-line web browser. Because such web browsers are
 executed in front of Vim you have to quit the web browser to return to Vim.
 
 -------------------------------------------------------------------------------
+The *:MakeWithShell* command
+
+This command is a very simple replacement for the |:make| command that does not
+pop up a console window on Windows. It doesn't come with all of the bells and
+whistles that Vim's built-in make command does but it should work.
+
+-------------------------------------------------------------------------------
 The *xolox#shell#execute()* function
 
 This function enables other Vim plug-ins to execute external commands in the
@@ -178,6 +187,9 @@ to your |vimrc| script:
     :nnoremap <Leader>fs :Fullscreen<CR>
     :inoremap <Leader>op <C-o>:Open<CR>
     :nnoremap <Leader>op :Open<CR>
+
+-------------------------------------------------------------------------------
+The *g:shell_make_override* option
 
 -------------------------------------------------------------------------------
 The *g:shell_verify_urls* option

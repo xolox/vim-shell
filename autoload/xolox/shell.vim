@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: April 30, 2013
+" Last Change: May 2, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.26'
+let g:xolox#shell#version = '0.10'
 
 call xolox#misc#compat#check('shell', 2)
 
@@ -162,6 +162,20 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     if exists('tempin') | call delete(tempin) | endif
     if exists('tempout') | call delete(tempout) | endif
   endtry
+endfunction
+
+function! xolox#shell#make(bang, args) " -- run :make silent (without a console window) {{{1
+  let command = &makeprg
+  if a:args =~ '\S'
+    let command .= ' ' . a:args
+  endif
+  call xolox#misc#msg#info("shell.vim %s: Running make command %s ..", g:xolox#shell#version, command)
+  if a:bang == '!'
+    cgetexpr xolox#shell#execute(command, 1)
+  else
+    cexpr xolox#shell#execute(command, 1)
+  endif
+  cwindow
 endfunction
 
 function! xolox#shell#maximize(...) " -- show/hide Vim's menu, tool bar and/or tab line {{{1
