@@ -14,8 +14,8 @@ Contents ~
   6. The |xolox#shell#fullscreen()| function
   7. The |xolox#shell#is_fullscreen()| function
   8. The |g:shell_fullscreen_items| option
-  9. The |g:shell_mappings_enabled| option
-  10. The |g:shell_make_override| option
+  9. The |g:shell_fullscreen_always_on_top| option
+  10. The |g:shell_mappings_enabled| option
   11. The |g:shell_verify_urls| option
  3. Background                                                |shell-background|
  4. Other full-screen implementations  |shell-other-full-screen-implementations|
@@ -173,6 +173,16 @@ set the buffer local variable 'b:shell_fullscreen_items' to change these
 settings for specific buffers.
 
 -------------------------------------------------------------------------------
+The *g:shell_fullscreen_always_on_top* option
+
+On Windows the |:Fullscreen| command sets the Vim window to "always on top".
+Some people don't like this which is why this option was added. Its default
+value is true (1) so to disable the "always on top" feature you would add this
+to your |vimrc| script:
+>
+    :let g:shell_fullscreen_always_on_top = 0
+
+-------------------------------------------------------------------------------
 The *g:shell_mappings_enabled* option
 
 If you don't like the default mappings for the |:Open| and |:Fullscreen|
@@ -187,9 +197,6 @@ to your |vimrc| script:
     :nnoremap <Leader>fs :Fullscreen<CR>
     :inoremap <Leader>op <C-o>:Open<CR>
     :nnoremap <Leader>op :Open<CR>
-
--------------------------------------------------------------------------------
-The *g:shell_make_override* option
 
 -------------------------------------------------------------------------------
 The *g:shell_verify_urls* option

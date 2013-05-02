@@ -74,6 +74,12 @@ This variable is a string containing any combination of the following characters
 
 By default all the above items are hidden in full-screen mode. You can also set the buffer local variable `b:shell_fullscreen_items` to change these settings for specific buffers.
 
+### The `g:shell_fullscreen_always_on_top` option
+
+On Windows the `:Fullscreen` command sets the Vim window to "always on top". Some people don't like this which is why this option was added. Its default value is true (1) so to disable the "always on top" feature you would add this to your [vimrc script] [vimrc]:
+
+    :let g:shell_fullscreen_always_on_top = 0
+
 ### The `g:shell_mappings_enabled` option
 
 If you don't like the default mappings for the `:Open` and `:Fullscreen` commands then add the following to your [vimrc script] [vimrc]:

@@ -13,6 +13,11 @@ endif
 
 " Configuration defaults. {{{1
 
+if !exists('g:shell_fullscreen_always_on_top')
+  " Set this to false (0) if you don't like the "always on top" behavior.
+  let g:shell_fullscreen_always_on_top = 1
+endif
+
 if !exists('g:shell_mappings_enabled')
   " Set this to false (0) if you don't like the default mappings.
   let g:shell_mappings_enabled = 1

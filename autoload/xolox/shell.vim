@@ -3,7 +3,7 @@
 " Last Change: May 2, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.10'
+let g:xolox#shell#version = '0.11'
 
 call xolox#misc#compat#check('shell', 2)
 
@@ -226,7 +226,11 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
   " custom dynamic link library on Windows or the "wmctrl" program on UNIX.
   try
     if xolox#misc#os#is_win() && s:has_dll()
-      let error = s:library_call('fullscreen', !s:fullscreen_enabled)
+      let options = s:fullscreen_enabled ? 'disable' : 'enable'
+      if g:shell_fullscreen_always_on_top
+        let options .= ', always on top'
+      endif
+      let error = s:library_call('fullscreen', options)
       if error != ''
         throw "shell.dll failed with: " . error
       endif
@@ -337,12 +341,14 @@ if xolox#misc#os#is_win()
   let s:library = expand('<sfile>:p:h:h:h') . '\misc\shell\shell-' . s:cpu_arch . '.dll'
 
   function! s:library_call(fn, arg) " {{{2
-    return libcall(s:library, a:fn, a:arg)
+    let result = libcall(s:library, a:fn, a:arg)
+    call xolox#misc#msg#debug("Called %s:%s, returning %s", s:library, a:fn, result)
+    return result
   endfunction
 
   function! s:has_dll() " {{{2
     try
-      return s:library_call('libversion', '') == '0.3'
+      return s:library_call('libversion', '') == '0.4'
     catch
       return 0
     endtry

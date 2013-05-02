@@ -18,7 +18,7 @@
  *     CL /LD shell.c shell32.lib user32.lib
  *
  * This should create the dynamic link library "shell.dll" which you can call
- * from Vim using for example :call libcall('c:/shell.dll', 'fullscreen', 1).
+ * from Vim using for example :call libcall('c:/shell.dll', 'fullscreen', 'enable').
  *
  * Happy vimming!
  *
@@ -29,6 +29,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <ctype.h>
+#include <string.h>
 #include <shellapi.h> /* ShellExecute? */
 
 /* Dynamic strings are returned using a static buffer to avoid memory leaks */
@@ -100,7 +101,7 @@ __declspec(dllexport)
 const char *libversion(const char *ignored) /* {{{1 */
 {
 	(void)ignored;
-	return Success("0.3");
+	return Success("0.4");
 }
 
 __declspec(dllexport)
@@ -111,7 +112,7 @@ const char *openurl(const char *path) /* {{{1 */
 }
 
 __declspec(dllexport)
-const char *fullscreen(long enable) /* {{{1 */
+const char *fullscreen(const char *options) /* {{{1 */
 {
 	HWND window;
 	LONG styles;
@@ -131,12 +132,14 @@ const char *fullscreen(long enable) /* {{{1 */
 	if (!exStyle)
 		return Failure("Could not query window ex style!");
 
-	if (enable) { 
+	if (strstr(options, "enable")) { 
 		styles ^= WS_CAPTION | WS_THICKFRAME;
-		exStyle |= WS_EX_TOPMOST;
+		if (strstr(options, "always on top"))
+			exStyle |= WS_EX_TOPMOST;
 	} else {
 		styles |= WS_CAPTION | WS_THICKFRAME;
-		exStyle &= ~WS_EX_TOPMOST;
+		if (strstr(options, "always on top"))
+			exStyle &= ~WS_EX_TOPMOST;
 	}
 
 	if (!SetWindowLong(window, GWL_STYLE, styles))
@@ -145,7 +148,7 @@ const char *fullscreen(long enable) /* {{{1 */
 	if (!SetWindowLong(window, GWL_EXSTYLE, exStyle))
 		return Failure("Could not apply window ex style!");
 
-	if (enable) {
+	if (strstr(options, "enable")) {
 		monitor = MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST);
 		if (!monitor)
 			return Failure("Could not get handle to monitor!");
