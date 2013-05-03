@@ -101,7 +101,7 @@ __declspec(dllexport)
 const char *libversion(const char *ignored) /* {{{1 */
 {
 	(void)ignored;
-	return Success("0.4");
+	return Success("0.5");
 }
 
 __declspec(dllexport)
@@ -115,10 +115,12 @@ __declspec(dllexport)
 const char *fullscreen(const char *options) /* {{{1 */
 {
 	HWND window;
-	LONG styles;
-	LONG exStyle;
+	LONG styles, exStyle, enable, always_on_top;
 	HMONITOR monitor;
 	MONITORINFO info = { sizeof info };
+
+	enable = (strstr(options, "enable") != NULL);
+	always_on_top = (strstr(options, "always on top") != NULL);
 
 	window = GetForegroundWindow();
 	if (!window)
@@ -132,13 +134,13 @@ const char *fullscreen(const char *options) /* {{{1 */
 	if (!exStyle)
 		return Failure("Could not query window ex style!");
 
-	if (strstr(options, "enable")) { 
+	if (enable) { 
 		styles ^= WS_CAPTION | WS_THICKFRAME;
-		if (strstr(options, "always on top"))
+		if (always_on_top)
 			exStyle |= WS_EX_TOPMOST;
 	} else {
 		styles |= WS_CAPTION | WS_THICKFRAME;
-		if (strstr(options, "always on top"))
+		if (always_on_top)
 			exStyle &= ~WS_EX_TOPMOST;
 	}
 
@@ -148,13 +150,14 @@ const char *fullscreen(const char *options) /* {{{1 */
 	if (!SetWindowLong(window, GWL_EXSTYLE, exStyle))
 		return Failure("Could not apply window ex style!");
 
-	if (strstr(options, "enable")) {
+	if (enable) {
 		monitor = MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST);
 		if (!monitor)
 			return Failure("Could not get handle to monitor!");
 		if (!GetMonitorInfo(monitor, &info))
 			return Failure("Could not get monitor information!");
-		if (!SetWindowPos(window, HWND_TOPMOST,
+		if (!SetWindowPos(window,
+					always_on_top ? HWND_TOPMOST : HWND_TOP,
 					info.rcMonitor.left,
 					info.rcMonitor.top,
 					info.rcMonitor.right - info.rcMonitor.left,

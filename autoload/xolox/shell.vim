@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 2, 2013
+" Last Change: May 3, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.11'
+let g:xolox#shell#version = '0.11.2'
 
 call xolox#misc#compat#check('shell', 2)
 
@@ -348,7 +348,7 @@ if xolox#misc#os#is_win()
 
   function! s:has_dll() " {{{2
     try
-      return s:library_call('libversion', '') == '0.4'
+      return s:library_call('libversion', '') == '0.5'
     catch
       return 0
     endtry
