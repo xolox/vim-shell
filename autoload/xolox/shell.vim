@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 3, 2013
+" Last Change: May 6, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.11.2'
+let g:xolox#shell#version = '0.11.3'
 
 call xolox#misc#compat#check('shell', 2)
 
@@ -364,7 +364,7 @@ function! s:handle_error(cmd, output) " {{{2
     else
       let msg .= ' (output: %s)'
       let output = strtrans(xolox#misc#str#trim(a:output))
-      throw printf(msg, string(a:cmd), )
+      throw printf(msg, string(a:cmd), output)
     endif
   endif
 endfunction
