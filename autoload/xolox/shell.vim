@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 6, 2013
+" Last Change: May 13, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.11.3'
+let g:xolox#shell#version = '0.12'
 
 call xolox#misc#compat#check('shell', 2)
 
@@ -89,7 +89,7 @@ function! s:open_at_cursor()
 endfunction
 
 function! xolox#shell#open_with_windows_shell(location)
-  if xolox#misc#os#is_win() && s:has_dll()
+  if xolox#shell#can_use_dll()
     let error = s:library_call('openurl', a:location)
     if error != ''
       let msg = "shell.vim %s: Failed to open '%s' with Windows shell! (error: %s)"
@@ -117,51 +117,19 @@ function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses 
   endif
 endfunction
 
-function! xolox#shell#execute(command, synchronous, ...) " -- execute external commands asynchronously {{{1
-  try
-    let cmd = a:command
-    let has_input = a:0 > 0
-    if has_input
-      let tempin = tempname()
-      call writefile(type(a:1) == type([]) ? a:1 : split(a:1, "\n"), tempin)
-      let cmd .= ' < ' . xolox#misc#escape#shell(tempin)
+function! xolox#shell#execute_with_dll(cmd, async) " -- execute external commands on Windows using the compiled DLL {{{1
+  let fn = 'execute_' . (a:async ? 'a' : '') . 'synchronous'
+  let cmd = &shell . ' ' . &shellcmdflag . ' ' . a:cmd
+  let result = s:library_call(fn, cmd)
+  if result =~ '^exit_code=\d\+$'
+    return matchstr(result, '^exit_code=\zs\d\+$') + 0
+  elseif result =~ '\S'
+    let msg = printf('%s(%s) failed!', fn, string(cmd))
+    if result =~ '\S'
+      let msg .= ' (output: ' . xolox#misc#str#trim(result) . ')'
     endif
-    if a:synchronous
-      let tempout = tempname()
-      let cmd .= ' > ' . xolox#misc#escape#shell(tempout) . ' 2>&1'
-    endif
-    if xolox#misc#os#is_win() && s:has_dll()
-      let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
-      let cmd = &shell . ' ' . &shellcmdflag . ' ' . cmd
-      call xolox#misc#msg#debug("shell.vim %s: Executing %s using compiled DLL.", g:xolox#shell#version, cmd)
-      let error = s:library_call(fn, cmd)
-      if error != ''
-        let msg = '%s(%s) failed! (error: %s)'
-        throw printf(msg, fn, strtrans(cmd), strtrans(error))
-      endif
-    else
-      if has('unix') && !a:synchronous
-        let cmd = '(' . cmd . ') &'
-      endif
-      call xolox#misc#msg#debug("shell.vim %s: Executing %s using system().", g:xolox#shell#version, cmd)
-      call s:handle_error(cmd, system(cmd))
-    endif
-    if a:synchronous
-      try
-        return readfile(tempout)
-      catch
-        let msg = 'Failed to get output of command "%s"!'
-        throw printf(msg, strtrans(cmd))
-      endtry
-    else
-      return 1
-    endif
-  catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
-  finally
-    if exists('tempin') | call delete(tempin) | endif
-    if exists('tempout') | call delete(tempout) | endif
-  endtry
+    throw msg
+  endif
 endfunction
 
 function! xolox#shell#make(bang, args) " -- run :make silent (without a console window) {{{1
@@ -225,7 +193,7 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
   " Now try to toggle the real full-screen status of Vim's GUI window using a
   " custom dynamic link library on Windows or the "wmctrl" program on UNIX.
   try
-    if xolox#misc#os#is_win() && s:has_dll()
+    if xolox#shell#can_use_dll()
       let options = s:fullscreen_enabled ? 'disable' : 'enable'
       if g:shell_fullscreen_always_on_top
         let options .= ', always on top'
@@ -240,7 +208,17 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
         throw msg . " On Debian/Ubuntu you can install it by executing `sudo apt-get install wmctrl'."
       endif
       let command = 'wmctrl -r :ACTIVE: -b toggle,fullscreen 2>&1'
-      call s:handle_error(command, system(command))
+      let output = system(command)
+      if v:shell_error
+        let msg = "Command %s failed!"
+        if a:output =~ '^\_s*$'
+          throw printf(msg, string(a:cmd))
+        else
+          let msg .= ' (output: %s)'
+          let output = strtrans(xolox#misc#str#trim(a:output))
+          throw printf(msg, string(a:cmd), output)
+        endif
+      endif
     else
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
@@ -346,27 +324,16 @@ if xolox#misc#os#is_win()
     return result
   endfunction
 
-  function! s:has_dll() " {{{2
-    try
-      return s:library_call('libversion', '') == '0.5'
-    catch
-      return 0
-    endtry
+  function! xolox#shell#can_use_dll() " {{{2
+    if xolox#misc#os#is_win()
+      try
+        return s:library_call('libversion', '') == '0.5'
+      catch
+        return 0
+      endtry
+    endif
   endfunction
 
 endif
-
-function! s:handle_error(cmd, output) " {{{2
-  if v:shell_error
-    let msg = "Command %s failed!"
-    if a:output =~ '^\_s*$'
-      throw printf(msg, string(a:cmd))
-    else
-      let msg .= ' (output: %s)'
-      let output = strtrans(xolox#misc#str#trim(a:output))
-      throw printf(msg, string(a:cmd), output)
-    endif
-  endif
-endfunction
 
 " vim: ts=2 sw=2 et fdm=marker

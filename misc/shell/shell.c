@@ -30,6 +30,7 @@
 #include <windows.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdio.h>
 #include <shellapi.h> /* ShellExecute? */
 
 /* Dynamic strings are returned using a static buffer to avoid memory leaks */
@@ -72,17 +73,21 @@ static const char *execute(char *command, int wait) /* {{{1 */
 	ZeroMemory(&pi, sizeof(pi));
 	si.cb = sizeof(si);
 	if (CreateProcess(0, command, 0, 0, 0, CREATE_NO_WINDOW, 0, 0, &si, &pi)) {
-		if (wait) {
-			WaitForSingleObject(pi.hProcess, INFINITE);
-			/* long exit_code; */
-			/* TODO: GetExitCodeProcess( pi.hProcess, &exit_code); */
-			CloseHandle(pi.hProcess);
-			CloseHandle(pi.hThread);
+		if (!wait) {
+			return Success(NULL);
+		} else {
+			char rv[500];
+			DWORD exit_code;
+			if (WaitForSingleObject(pi.hProcess, INFINITE) != WAIT_FAILED
+				 	&& GetExitCodeProcess(pi.hProcess, &exit_code)
+				 	&& CloseHandle(pi.hProcess)
+					&& CloseHandle(pi.hThread)
+					&& sprintf(rv, "exit_code=%li", exit_code)) {
+				return Success(rv);
+			}
 		}
-		return Success(NULL);
-	} else {
-		return Failure(GetError());
 	}
+	return Failure(GetError());
 }
 
 __declspec(dllexport)

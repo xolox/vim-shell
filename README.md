@@ -8,7 +8,7 @@ This plug-in aims to improve the integration between [Vim][vim] and its environm
 
  * The `:Open` command and `<F6>` mapping know how to open file and directory names, URLs and e-mail addresses in your favorite programs (file manager, web browser, e-mail client, etc). To invoke this functionality without using the `:Open` command see my [open.vim](http://peterodding.com/code/vim/open-associated-programs/) plug-in, which was split off from `shell.vim` so that other Vim plug-ins can bundle it without bringing in all the other crap :-).
 
- * The `xolox#shell#execute()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
+ * The `xolox#misc#os#exec()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
 
 Two [Windows DLL files][dll] are included to perform these functions on Windows, while on UNIX external commands are used.
 
@@ -40,19 +40,24 @@ Note that on UNIX if the environment variable `$DISPLAY` is empty the plug-in wi
 
 This command is a very simple replacement for the [:make][make] command that does not pop up a console window on Windows. It doesn't come with all of the bells and whistles that Vim's built-in make command does but it should work.
 
-### The `xolox#shell#execute()` function
+### The `xolox#misc#os#exec()` function
 
 This function enables other Vim plug-ins to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*. For example try to execute the following command on Windows ([vimrun.exe][vimrun] is only included with Vim for Windows because it isn't needed on other platforms):
 
-    :call xolox#shell#execute('vimrun', 0)
+    :call xolox#misc#os#exec({'command': 'vimrun', 'async': 1})
 
-Immediately after executing this command Vim will respond to input again because `xolox#shell#execute()` doesn't wait for the external command to finish when the second argument is false (0). In addition no command prompt window will be shown which means [vimrun.exe][vimrun] is running completely invisible in the background. When the second argument is true (1) the output of the command will be returned as a list of lines, otherwise true (1) is returned unless an error occurred, in which case false (0) is returned.
+Immediately after executing this command Vim will respond to input again because `xolox#misc#os#exec()` doesn't wait for the external command to finish when the 'async' argument is true (1). In addition no command prompt window will be shown which means [vimrun.exe][vimrun] is running completely invisible in the background.
 
-If you want to verify that this function works as described, open the Windows task manager by pressing `Control-Shift-Escape` and check that the process `vimrun.exe` is listed in the processes tab. If you don't see the problem this is solving, try executing [vimrun.exe][vimrun] using Vim's built-in [system()][system] function instead:
+The function returns a dictionary of return values. In asynchronous mode the dictionary is empty. In synchronous mode it contains the following key/value pairs:
+
+    :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42'})
+    {'exit_code': 42, 'stdout': ['this is stdout'], 'stderr': ['this is stderr']}
+
+If you want to verify that this function works as described, execute the command mentioning `vimrun` above, open the Windows task manager by pressing `Control-Shift-Escape` and check that the process `vimrun.exe` is listed in the processes tab. If you don't see the problem this is solving, try executing [vimrun.exe][vimrun] using Vim's built-in [system()][system] function instead:
 
     :call system('vimrun')
 
-Vim will be completely unresponsive until you "press any key to continue" in the command prompt window that's running [vimrun.exe][vimrun]. Now of course the [system()][system] function should only be used with non-interactive programs (the documentation says as much) but my point was to simulate an external command that takes a while to finish and blocks Vim while doing so.
+Vim will be completely unresponsive until you "press any key to continue" in the command prompt window that's running [vimrun.exe][vimrun]. Of course the [system()][system] function should only be used with non-interactive programs (the documentation says as much) but the point is to simulate an external command that takes a while to finish and blocks Vim while doing so.
 
 Note that on Windows this function uses Vim's ['shell'][sh_opt] and ['shellcmdflag'][shcf_opt] options to compose the command line passed to the DLL.
 
