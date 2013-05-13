@@ -3,9 +3,9 @@
 " Last Change: May 13, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12'
+let g:xolox#shell#version = '0.12.1'
 
-call xolox#misc#compat#check('shell', 2)
+call xolox#misc#compat#check('shell', 3)
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -14,7 +14,8 @@ if !exists('s:fullscreen_enabled')
   let s:maximized = 0
 endif
 
-function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
+function! xolox#shell#open_cmd(arg) " {{{1
+  " Implementation of the :Open command.
   try
     " No argument?
     if a:arg !~ '\S'
@@ -88,7 +89,8 @@ function! s:open_at_cursor()
   endif
 endfunction
 
-function! xolox#shell#open_with_windows_shell(location)
+function! xolox#shell#open_with_windows_shell(location) " {{{1
+  " Open a location using the compiled DLL.
   if xolox#shell#can_use_dll()
     let error = s:library_call('openurl', a:location)
     if error != ''
@@ -98,7 +100,8 @@ function! xolox#shell#open_with_windows_shell(location)
   endif
 endfunction
 
-function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses embedded in source code comments {{{1
+function! xolox#shell#highlight_urls() " {{{1
+  " Highlight URLs and e-mail addresses embedded in source code comments.
   " URL highlighting breaks highlighting of <a href="..."> tags in HTML.
   if exists('g:syntax_on') && &ft !~ xolox#misc#option#get('shell_hl_exclude', '^\(x|ht\)ml$')
     if &ft == 'help'
@@ -117,7 +120,8 @@ function! xolox#shell#highlight_urls() " -- highlight URLs and e-mail addresses 
   endif
 endfunction
 
-function! xolox#shell#execute_with_dll(cmd, async) " -- execute external commands on Windows using the compiled DLL {{{1
+function! xolox#shell#execute_with_dll(cmd, async) " {{{1
+  " Execute external commands on Windows using the compiled DLL.
   let fn = 'execute_' . (a:async ? 'a' : '') . 'synchronous'
   let cmd = &shell . ' ' . &shellcmdflag . ' ' . a:cmd
   let result = s:library_call(fn, cmd)
@@ -132,21 +136,29 @@ function! xolox#shell#execute_with_dll(cmd, async) " -- execute external command
   endif
 endfunction
 
-function! xolox#shell#make(bang, args) " -- run :make silent (without a console window) {{{1
+function! xolox#shell#make(bang, args) " {{{1
+  " Run :make silent (without a console window).
   let command = &makeprg
   if a:args =~ '\S'
     let command .= ' ' . a:args
   endif
   call xolox#misc#msg#info("shell.vim %s: Running make command %s ..", g:xolox#shell#version, command)
   if a:bang == '!'
-    cgetexpr xolox#shell#execute(command, 1)
+    cgetexpr s:make_cmd(command)
   else
-    cexpr xolox#shell#execute(command, 1)
+    cexpr s:make_cmd(command)
   endif
   cwindow
 endfunction
 
-function! xolox#shell#maximize(...) " -- show/hide Vim's menu, tool bar and/or tab line {{{1
+function! s:make_cmd(command)
+  let command = a:command . ' 2>&1'
+  let result = xolox#misc#os#exec({'command': command, 'check': 0})
+  return join(result['stdout'], "\n")
+endfunction
+
+function! xolox#shell#maximize(...) " {{{1
+  " Show/hide Vim's menu, tool bar and/or tab line.
   let new_state = a:0 == 0 ? !s:maximized : a:1
   if new_state && !s:maximized
     " Hide the main menu, tool bar and/or tab line. Remember what was hidden
@@ -177,7 +189,8 @@ function! xolox#shell#maximize(...) " -- show/hide Vim's menu, tool bar and/or t
   return s:maximized
 endfunction
 
-function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-screen mode {{{1
+function! xolox#shell#fullscreen() " {{{1
+  " Toggle Vim between normal and full-screen mode.
 
   " When entering full-screen...
   if !s:fullscreen_enabled
@@ -251,11 +264,13 @@ function! xolox#shell#fullscreen() " -- toggle Vim between normal and full-scree
 
 endfunction
 
-function! xolox#shell#is_fullscreen() " -- check whether Vim is currently in full-screen mode {{{1
+function! xolox#shell#is_fullscreen() " {{{1
+  " Check whether Vim is currently in full-screen mode.
   return s:fullscreen_enabled
 endfunction
 
-function! xolox#shell#url_exists(url) " -- check whether a URL points to an existing resource (using Python) {{{1
+function! xolox#shell#url_exists(url) " {{{1
+  " Check whether a URL points to an existing resource (using Python).
   try
     " Embedding Python code in Vim scripts is always a bit awkward :-(
     " (because of the forced indentation thing Python insists on).
@@ -303,35 +318,38 @@ EOF
   endtry
 endfunction
 
-function! xolox#shell#url_pattern() " -- get the preferred/default pattern to match URLs {{{1
+function! xolox#shell#url_pattern() " {{{1
+  " Get the preferred/default pattern to match URLs.
   return xolox#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\(\S\&[^"]\)*\w\)\+[/?#]\?')
 endfunction
 
-function! xolox#shell#mail_pattern() " -- get the preferred/default pattern to match e-mail addresses {{{1
+function! xolox#shell#mail_pattern() " {{{1
+  " Get the preferred/default pattern to match e-mail addresses.
   return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r<>]*\w@\w[^@ \t\r<>]\+\w\>')
 endfunction
 
-" Miscellaneous script-local functions. {{{1
+function! xolox#shell#can_use_dll() " {{{1
+  " Check whether the compiled DLL is usable in the current environment.
+  if xolox#misc#os#is_win()
+    try
+      return s:library_call('libversion', '') == '0.5'
+    catch
+      return 0
+    endtry
+  endif
+endfunction
+
+" s:library_call() - Only defined on Windows. {{{1
 
 if xolox#misc#os#is_win()
 
   let s:cpu_arch = has('win64') ? 'x64' : 'x86'
   let s:library = expand('<sfile>:p:h:h:h') . '\misc\shell\shell-' . s:cpu_arch . '.dll'
 
-  function! s:library_call(fn, arg) " {{{2
+  function! s:library_call(fn, arg)
     let result = libcall(s:library, a:fn, a:arg)
     call xolox#misc#msg#debug("Called %s:%s, returning %s", s:library, a:fn, result)
     return result
-  endfunction
-
-  function! xolox#shell#can_use_dll() " {{{2
-    if xolox#misc#os#is_win()
-      try
-        return s:library_call('libversion', '') == '0.5'
-      catch
-        return 0
-      endtry
-    endif
   endfunction
 
 endif
