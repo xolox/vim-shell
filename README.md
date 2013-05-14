@@ -40,6 +40,8 @@ Note that on UNIX if the environment variable `$DISPLAY` is empty the plug-in wi
 
 This command is a very simple replacement for the [:make][make] command that does not pop up a console window on Windows. It doesn't come with all of the bells and whistles that Vim's built-in make command does but it should work.
 
+Because Vim's [v:shell_error][shell_error] variable is read only (which means it cannot be set by a Vim plug-in) the vim-shell plug-in defines its own variable with the exit code of the `make` process executed by `:MakeWithShell`. This variable is called `g:xolox#shell#make_exit_code`. The semantics are exactly the same as for [v:shell_error][shell_error].
+
 ### The `xolox#misc#os#exec()` function
 
 This function enables other Vim plug-ins to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*. For example try to execute the following command on Windows ([vimrun.exe][vimrun] is only included with Vim for Windows because it isn't needed on other platforms):
@@ -135,6 +137,7 @@ This software is licensed under the [MIT license](http://en.wikipedia.org/wiki/M
 [make]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:make
 [sh_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shell%27
 [shcf_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shellcmdflag%27
+[shell_error]: http://vimdoc.sourceforge.net/htmldoc/eval.html#v:shell_error
 [system]: http://vimdoc.sourceforge.net/htmldoc/eval.html#system()
 [vim]: http://www.vim.org/
 [vim_scripts_entry]: http://www.vim.org/scripts/script.php?script_id=3123

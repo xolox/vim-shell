@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 13, 2013
+" Last Change: May 14, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.1'
+let g:xolox#shell#version = '0.12.2'
 
 call xolox#misc#compat#check('shell', 3)
 
@@ -154,8 +154,13 @@ endfunction
 function! s:make_cmd(command)
   let command = a:command . ' 2>&1'
   let result = xolox#misc#os#exec({'command': command, 'check': 0})
+  let g:xolox#shell#make_exit_code = result['exit_code']
   return join(result['stdout'], "\n")
 endfunction
+
+if !exists('g:xolox#shell#make_exit_code')
+  let g:xolox#shell#make_exit_code = 0
+endif
 
 function! xolox#shell#maximize(...) " {{{1
   " Show/hide Vim's menu, tool bar and/or tab line.
