@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 14, 2013
+" Last Change: May 20, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.2'
+let g:xolox#shell#version = '0.12.3'
 
 call xolox#misc#compat#check('shell', 3)
 
@@ -337,6 +337,7 @@ function! xolox#shell#can_use_dll() " {{{1
   " Check whether the compiled DLL is usable in the current environment.
   if xolox#misc#os#is_win()
     try
+      call xolox#misc#msg#debug("shell.vim %s: Checking if compiled DDL is supported ..", g:xolox#shell#version)
       return s:library_call('libversion', '') == '0.5'
     catch
       return 0
@@ -352,8 +353,9 @@ if xolox#misc#os#is_win()
   let s:library = expand('<sfile>:p:h:h:h') . '\misc\shell\shell-' . s:cpu_arch . '.dll'
 
   function! s:library_call(fn, arg)
+    let starttime = xolox#misc#timer#start()
     let result = libcall(s:library, a:fn, a:arg)
-    call xolox#misc#msg#debug("Called %s:%s, returning %s", s:library, a:fn, result)
+    call xolox#misc#timer#stop("shell.vim %s: Called %s:%s, returning %s in %s", g:xolox#shell#version, s:library, a:fn, result, starttime)
     return result
   endfunction
 
