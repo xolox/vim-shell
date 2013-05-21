@@ -5,8 +5,6 @@
 
 let g:xolox#shell#version = '0.12.5'
 
-call xolox#misc#compat#check('shell.vim', g:xolox#shell#version, 9)
-
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
   let s:contact = "If you have suggestions, please contact peter@peterodding.com."
