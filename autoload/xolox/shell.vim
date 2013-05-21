@@ -1,3 +1,9 @@
+" This Vim script was modified by a Python script that I use to manage the
+" inclusion of miscellaneous functions in the plug-ins that I publish to Vim
+" Online and GitHub. Please don't edit this file, instead make your changes on
+" the 'dev' branch of the git repository (thanks!). This file was generated on
+" May 21, 2013 at 03:13.
+
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
 " Last Change: May 21, 2013
@@ -21,26 +27,26 @@ function! xolox#shell#open_cmd(arg) " {{{1
       if !s:open_at_cursor()
         " Open the directory of the current buffer.
         let bufdir = expand('%:p:h')
-        call xolox#misc#msg#debug("shell.vim %s: Opening directory of current buffer '%s'.", g:xolox#shell#version, bufdir)
-        call xolox#misc#open#file(bufdir)
+        call xolox#shell#misc#msg#debug("shell.vim %s: Opening directory of current buffer '%s'.", g:xolox#shell#version, bufdir)
+        call xolox#shell#misc#open#file(bufdir)
       endif
     elseif (a:arg =~ xolox#shell#url_pattern()) || (a:arg =~ xolox#shell#mail_pattern())
       " Open the URL or e-mail address given as an argument.
-      call xolox#misc#msg#debug("shell.vim %s: Opening URL or e-mail address '%s'.", g:xolox#shell#version, a:arg)
-      call xolox#misc#open#url(a:arg)
+      call xolox#shell#misc#msg#debug("shell.vim %s: Opening URL or e-mail address '%s'.", g:xolox#shell#version, a:arg)
+      call xolox#shell#misc#open#url(a:arg)
     else
       let arg = fnamemodify(a:arg, ':p')
       " Does the argument point to an existing file or directory?
       if isdirectory(arg) || filereadable(arg)
-        call xolox#misc#msg#debug("shell.vim %s: Opening valid filename '%s'.", g:xolox#shell#version, arg)
-        call xolox#misc#open#file(arg)
+        call xolox#shell#misc#msg#debug("shell.vim %s: Opening valid filename '%s'.", g:xolox#shell#version, arg)
+        call xolox#shell#misc#open#file(arg)
       else
         let msg = "I don't know how to open '%s'! %s"
         echoerr printf(msg, a:arg, s:contact)
       endif
     endif
   catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
+    call xolox#shell#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
   endtry
 endfunction
 
@@ -54,20 +60,20 @@ function! s:open_at_cursor()
     let match = matchstr(cWORD, xolox#shell#url_pattern())
   endif
   if match != ''
-    call xolox#misc#msg#debug("shell.vim %s: Matched URL '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
+    call xolox#shell#misc#msg#debug("shell.vim %s: Matched URL '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
   else
     " Now try to match an e-mail address in <cWORD> because most filenames
     " won't contain an @-sign while e-mail addresses require it.
     let match = matchstr(cWORD, xolox#shell#mail_pattern())
     if match != ''
-      call xolox#misc#msg#debug("shell.vim %s: Matched e-mail address '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
+      call xolox#shell#misc#msg#debug("shell.vim %s: Matched e-mail address '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
     endif
   endif
   if match != ''
-    call xolox#misc#open#url(match)
+    call xolox#shell#misc#open#url(match)
     return 1
   else
-    call xolox#misc#msg#debug("shell.vim %s: Trying to match filename in current line ..", g:xolox#shell#version)
+    call xolox#shell#misc#msg#debug("shell.vim %s: Trying to match filename in current line ..", g:xolox#shell#version)
     " As a last resort try to match a filename at the text cursor position.
     let line = getline('.')
     let idx = col('.') - 1
@@ -78,11 +84,11 @@ function! s:open_at_cursor()
       let match = split(expand(match), "\n")[0]
     endif
     if match != '' && (isdirectory(match) || filereadable(match))
-      call xolox#misc#msg#debug("shell.vim %s: Matched valid filename '%s' in current line ..", g:xolox#shell#version, match)
-      call xolox#misc#open#file(match)
+      call xolox#shell#misc#msg#debug("shell.vim %s: Matched valid filename '%s' in current line ..", g:xolox#shell#version, match)
+      call xolox#shell#misc#open#file(match)
       return 1
     elseif match != ''
-      call xolox#misc#msg#debug("shell.vim %s: File or directory '%s' doesn't exist.", g:xolox#shell#version, match)
+      call xolox#shell#misc#msg#debug("shell.vim %s: File or directory '%s' doesn't exist.", g:xolox#shell#version, match)
     endif
   endif
 endfunction
@@ -93,7 +99,7 @@ function! xolox#shell#open_with_windows_shell(location) " {{{1
     let error = s:library_call('openurl', a:location)
     if error != ''
       let msg = "shell.vim %s: Failed to open '%s' with Windows shell! (error: %s)"
-      throw printf(msg, g:xolox#shell#version, a:location, strtrans(xolox#misc#str#trim(error)))
+      throw printf(msg, g:xolox#shell#version, a:location, strtrans(xolox#shell#misc#str#trim(error)))
     endif
   endif
 endfunction
@@ -101,7 +107,7 @@ endfunction
 function! xolox#shell#highlight_urls() " {{{1
   " Highlight URLs and e-mail addresses embedded in source code comments.
   " URL highlighting breaks highlighting of <a href="..."> tags in HTML.
-  if exists('g:syntax_on') && &ft !~ xolox#misc#option#get('shell_hl_exclude', '^\(x|ht\)ml$')
+  if exists('g:syntax_on') && &ft !~ xolox#shell#misc#option#get('shell_hl_exclude', '^\(x|ht\)ml$')
     if &ft == 'help'
       let command = 'syntax match %s /%s/'
       let urlgroup = 'HelpURL'
@@ -128,7 +134,7 @@ function! xolox#shell#execute_with_dll(cmd, async) " {{{1
   elseif result =~ '\S'
     let msg = printf('%s(%s) failed!', fn, string(cmd))
     if result =~ '\S'
-      let msg .= ' (output: ' . xolox#misc#str#trim(result) . ')'
+      let msg .= ' (output: ' . xolox#shell#misc#str#trim(result) . ')'
     endif
     throw msg
   endif
@@ -140,7 +146,7 @@ function! xolox#shell#make(bang, args) " {{{1
   if a:args =~ '\S'
     let command .= ' ' . a:args
   endif
-  call xolox#misc#msg#info("shell.vim %s: Running make command %s ..", g:xolox#shell#version, command)
+  call xolox#shell#misc#msg#info("shell.vim %s: Running make command %s ..", g:xolox#shell#version, command)
   if a:bang == '!'
     cgetexpr s:make_cmd(command)
   else
@@ -151,7 +157,7 @@ endfunction
 
 function! s:make_cmd(command)
   let command = a:command . ' 2>&1'
-  let result = xolox#misc#os#exec({'command': command, 'check': 0})
+  let result = xolox#shell#misc#os#exec({'command': command, 'check': 0})
   let g:xolox#shell#make_exit_code = result['exit_code']
   return join(result['stdout'], "\n")
 endfunction
@@ -167,7 +173,7 @@ function! xolox#shell#maximize(...) " {{{1
     " Hide the main menu, tool bar and/or tab line. Remember what was hidden
     " so its visibility can be restored when the user leaves full-screen.
     let s:go_toggled = ''
-    let fullscreen_items = xolox#misc#option#get('shell_fullscreen_items', 'mTe')
+    let fullscreen_items = xolox#shell#misc#option#get('shell_fullscreen_items', 'mTe')
     for item in split(fullscreen_items, '.\zs')
       if &go =~# item
         let s:go_toggled .= item
@@ -199,7 +205,7 @@ function! xolox#shell#fullscreen() " {{{1
   if !s:fullscreen_enabled
     " Save the window position and size when running Windows, because my
     " dynamic link library doesn't save/restore them while "wmctrl" does.
-    if xolox#misc#os#is_win()
+    if xolox#shell#misc#os#is_win()
       let [s:lines_save, s:columns_save] = [&lines, &columns]
       let [s:winpos_x_save, s:winpos_y_save] = [getwinposx(), getwinposy()]
     endif
@@ -231,7 +237,7 @@ function! xolox#shell#fullscreen() " {{{1
           throw printf(msg, string(a:cmd))
         else
           let msg .= ' (output: %s)'
-          let output = strtrans(xolox#misc#str#trim(a:output))
+          let output = strtrans(xolox#shell#misc#str#trim(a:output))
           throw printf(msg, string(a:cmd), output)
         endif
       endif
@@ -239,7 +245,7 @@ function! xolox#shell#fullscreen() " {{{1
       throw printf(s:enoimpl, 'fullscreen', s:contact)
     endif
   catch
-    call xolox#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
+    call xolox#shell#misc#msg#warn("shell.vim %s: %s at %s", g:xolox#shell#version, v:exception, v:throwpoint)
   endtry
 
   " When leaving full-screen...
@@ -247,7 +253,7 @@ function! xolox#shell#fullscreen() " {{{1
     call xolox#shell#maximize(0)
     " Restore window position and size only on Windows -- I don't know why
     " but the following actually breaks when running under "wmctrl"...
-    if xolox#misc#os#is_win()
+    if xolox#shell#misc#os#is_win()
       let [&lines, &columns] = [s:lines_save, s:columns_save]
       execute 'winpos' s:winpos_x_save s:winpos_y_save
       unlet s:lines_save s:columns_save s:winpos_x_save s:winpos_y_save
@@ -262,7 +268,7 @@ function! xolox#shell#fullscreen() " {{{1
     " Take a moment to let Vim's GUI finish redrawing (:redraw is
     " useless here because it only redraws Vim's internal state).
     sleep 50 m
-    call xolox#misc#msg#info("shell.vim %s: To return from full-screen type <F11> or execute :Fullscreen.", g:xolox#shell#version)
+    call xolox#shell#misc#msg#info("shell.vim %s: To return from full-screen type <F11> or execute :Fullscreen.", g:xolox#shell#version)
   endif
 
 endfunction
@@ -277,7 +283,7 @@ function! xolox#shell#url_exists(url) " {{{1
   try
     " Embedding Python code in Vim scripts is always a bit awkward :-(
     " (because of the forced indentation thing Python insists on).
-    let starttime = xolox#misc#timer#start()
+    let starttime = xolox#shell#misc#timer#start()
 python <<EOF
 
 # Standard library modules.
@@ -313,29 +319,29 @@ def shell_url_exists(absolute_url, rec=0):
 shell_url_exists(vim.eval('a:url'))
 
 EOF
-    call xolox#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it does).", g:xolox#shell#version, starttime, a:url)
+    call xolox#shell#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it does).", g:xolox#shell#version, starttime, a:url)
     return 1
   catch
-    call xolox#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it doesn't).", g:xolox#shell#version, starttime, a:url)
+    call xolox#shell#misc#timer#stop("shell.vim %s: Took %s to verify whether %s exists (it doesn't).", g:xolox#shell#version, starttime, a:url)
     return 0
   endtry
 endfunction
 
 function! xolox#shell#url_pattern() " {{{1
   " Get the preferred/default pattern to match URLs.
-  return xolox#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\(\S\&[^"]\)*\w\)\+[/?#]\?')
+  return xolox#shell#misc#option#get('shell_patt_url', '\<\w\{3,}://\(\(\S\&[^"]\)*\w\)\+[/?#]\?')
 endfunction
 
 function! xolox#shell#mail_pattern() " {{{1
   " Get the preferred/default pattern to match e-mail addresses.
-  return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r<>]*\w@\w[^@ \t\r<>]\+\w\>')
+  return xolox#shell#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r<>]*\w@\w[^@ \t\r<>]\+\w\>')
 endfunction
 
 function! xolox#shell#can_use_dll() " {{{1
   " Check whether the compiled DLL is usable in the current environment.
-  if xolox#misc#os#is_win()
+  if xolox#shell#misc#os#is_win()
     try
-      call xolox#misc#msg#debug("shell.vim %s: Checking if compiled DDL is supported ..", g:xolox#shell#version)
+      call xolox#shell#misc#msg#debug("shell.vim %s: Checking if compiled DDL is supported ..", g:xolox#shell#version)
       return s:library_call('libversion', '') == '0.5'
     catch
       return 0
@@ -345,16 +351,16 @@ endfunction
 
 " s:library_call() - Only defined on Windows. {{{1
 
-if xolox#misc#os#is_win()
+if xolox#shell#misc#os#is_win()
 
   let s:cpu_arch = has('win64') ? 'x64' : 'x86'
   let s:library = expand('<sfile>:p:h:h:h') . '\misc\shell\shell-' . s:cpu_arch . '.dll'
 
   function! s:library_call(fn, arg)
-    let starttime = xolox#misc#timer#start()
+    let starttime = xolox#shell#misc#timer#start()
     let result = libcall(s:library, a:fn, a:arg)
     let friendly_result = empty(result) ? '(empty string)' : printf('string %s', string(result))
-    call xolox#misc#timer#stop("shell.vim %s: Called function %s() in DLL %s, returning %s in %s.", g:xolox#shell#version, a:fn, s:library, friendly_result, starttime)
+    call xolox#shell#misc#timer#stop("shell.vim %s: Called function %s() in DLL %s, returning %s in %s.", g:xolox#shell#version, a:fn, s:library, friendly_result, starttime)
     return result
   endfunction
 
