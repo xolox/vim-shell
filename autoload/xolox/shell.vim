@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 20, 2013
+" Last Change: May 21, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.5'
+let g:xolox#shell#version = '0.12.6'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -353,7 +353,8 @@ if xolox#misc#os#is_win()
   function! s:library_call(fn, arg)
     let starttime = xolox#misc#timer#start()
     let result = libcall(s:library, a:fn, a:arg)
-    call xolox#misc#timer#stop("shell.vim %s: Called %s:%s, returning %s in %s", g:xolox#shell#version, s:library, a:fn, result, starttime)
+    let friendly_result = empty(result) ? '(empty string)' : printf('string %s', string(result))
+    call xolox#misc#timer#stop("shell.vim %s: Called function %s() in DLL %s, returning %s in %s.", g:xolox#shell#version, a:fn, s:library, friendly_result, starttime)
     return result
   endfunction
 
