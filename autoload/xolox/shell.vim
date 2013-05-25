@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 21, 2013
+" Last Change: May 25, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.6'
+let g:xolox#shell#version = '0.12.7'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -270,6 +270,22 @@ endfunction
 function! xolox#shell#is_fullscreen() " {{{1
   " Check whether Vim is currently in full-screen mode.
   return s:fullscreen_enabled
+endfunction
+
+function! xolox#shell#persist_fullscreen() " {{{1
+  " Return Vim commands needed to restore Vim's full-screen state.
+  let commands = []
+  if xolox#shell#is_fullscreen()
+    " The vim-session plug-in persists and restores Vim's &guioptions while
+    " the :Fullscreen command also manipulates &guioptions. This can cause
+    " several weird interactions. To avoid this, we do some trickery here.
+    call add(commands, "let &guioptions = " . string(&guioptions . s:go_toggled))
+    if exists('s:stal_save')
+      call add(commands, "let &stal = " . s:stal_save)
+    endif
+    call add(commands, "call xolox#shell#fullscreen()")
+  endif
+  return commands
 endfunction
 
 function! xolox#shell#url_exists(url) " {{{1
