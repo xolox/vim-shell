@@ -5,7 +5,8 @@
 Contents ~
 
  1. Introduction                                            |shell-introduction|
- 2. Usage (commands & functions)              |shell-usage-(commands-functions)|
+ 2. Installation                                            |shell-installation|
+ 3. Usage (commands & functions)              |shell-usage-(commands-functions)|
   1. The |:Maximize| command
   2. The |:Fullscreen| command
   3. The |:Open| command
@@ -17,10 +18,10 @@ Contents ~
   9. The |g:shell_fullscreen_always_on_top| option
   10. The |g:shell_mappings_enabled| option
   11. The |g:shell_verify_urls| option
- 3. Background                                                |shell-background|
- 4. Other full-screen implementations  |shell-other-full-screen-implementations|
- 5. Contact                                                      |shell-contact|
- 6. License                                                      |shell-license|
+ 4. Background                                                |shell-background|
+ 5. Other full-screen implementations  |shell-other-full-screen-implementations|
+ 6. Contact                                                      |shell-contact|
+ 7. License                                                      |shell-license|
 
 ===============================================================================
                                                             *shell-introduction*
@@ -40,17 +41,33 @@ This plug-in aims to improve the integration between Vim and its environment
 
  - The |:Open| command and '<F6>' mapping know how to open file and directory
    names, URLs and e-mail addresses in your favorite programs (file manager,
-   web browser, e-mail client, etc). To invoke this functionality without
-   using the |:Open| command see my open.vim [2] plug-in, which was split off
-   from 'shell.vim' so that other Vim plug-ins can bundle it without bringing
-   in all the other crap :-).
+   web browser, e-mail client, etc).
 
  - The 'xolox#misc#os#exec()' function enables other Vim plug-ins (like my
-   easytags.vim [3] plug-in) to execute external commands in the background
+   easytags.vim [2] plug-in) to execute external commands in the background
    (i.e. asynchronously) without opening a command prompt window on Windows.
 
-Two Windows DLL files [4] are included to perform these functions on Windows,
+Two Windows DLL files [3] are included to perform these functions on Windows,
 while on UNIX external commands are used.
+
+===============================================================================
+                                                            *shell-installation*
+Installation ~
+
+Please note that the vim-shell plug-in requires my vim-misc plug-in which is
+separately distributed.
+
+Unzip the most recent ZIP archives of the vim-shell [4] and vim-misc [5]
+plug-ins inside your Vim profile directory (usually this is '~/.vim' on UNIX
+and '%USERPROFILE%\vimfiles' on Windows), restart Vim and execute the command
+':helptags ~/.vim/doc' (use ':helptags ~\vimfiles\doc' instead on Windows).
+
+If you prefer you can also use Pathogen [6], Vundle [7] or a similar tool to
+install & update the vim-shell [8] and vim-misc [9] plug-ins using a local
+clone of the git repository.
+
+After you've installed the plug-in and restarted Vim, the following commands
+will be available to you:
 
 ===============================================================================
                                               *shell-usage-(commands-functions)*
@@ -71,7 +88,7 @@ The |:Fullscreen| command toggles Vim between normal and full-screen mode [1].
 It's mapped to '<F11>' by default, see |g:shell_mappings_enabled| if you don't
 like this. This command first executes |:Maximize| and then (if possible)
 switches Vim's |GUI| window to real full-screen mode (hiding any taskbars,
-panels or docks [5]). When you leave full-screen Vim's main menu, toolbar and
+panels or docks [10]). When you leave full-screen Vim's main menu, toolbar and
 tabline are restored and the |GUI| window is switched back to normal mode.
 
 Note that on UNIX this command even works inside of graphical terminal
@@ -164,7 +181,7 @@ command is just a shorter way to call this function.
 The *xolox#shell#is_fullscreen()* function
 
 Call this function to determine whether Vim is in full screen mode. My
-session.vim plug-in [6] uses this to persist full screen mode.
+session.vim plug-in [11] uses this to persist full screen mode.
 
 -------------------------------------------------------------------------------
 The *g:shell_fullscreen_items* option
@@ -234,7 +251,7 @@ Background ~
 
 Vim has a limited ability to call external libraries using the Vim script
 function |libcall()|. A few years ago when I was still using Windows a lot I
-created a Windows DLL [4] that could be used with |libcall()| to toggle Vim's
+created a Windows DLL [3] that could be used with |libcall()| to toggle Vim's
 GUI window between regular and full-screen mode. I also added a few other
 useful functions, e.g. 'openurl()' to launch the default web browser and
 'execute()' which works like Vim's |system()| function but doesn't wait for the
@@ -242,29 +259,20 @@ process to finish and doesn't show a command prompt.
 
 Since then I switched to Linux and didn't look back, which meant the DLL sat
 in my '~/.vim/etc/' waiting to be revived. Now that I've published my
-easytags.vim [3] plug-in and put a lot of effort into making it Windows
+easytags.vim [2] plug-in and put a lot of effort into making it Windows
 compatible, the 'execute()' function from the DLL would be very useful to run
-Exuberant Ctags [7] in the background without stealing Vim's focus by opening
+Exuberant Ctags [12] in the background without stealing Vim's focus by opening
 a command prompt window. This is why I've decided to release the DLL. Because
 I switched to Linux I've also added an autoload script that wraps the DLL on
 Windows and calls out to external programs such as 'wmctrl', 'gnome-open',
 'kde-open', and others on UNIX.
 
-Before I go ahead and bundle the DLL files with my easytags.vim [3] plug-in I
-need to make sure they're compatible with as many Windows Vim installations
-out there as possible, e.g. XP/Vista/7, different service packs, 32/64 bits,
-etc. I've uploaded a ZIP archive including two compiled DLL files [8] to the
-Vim scripts page [9] for this plug-in (build using the latest Windows SDK but
-targeting Windows XP x86/x64 RELEASE, should also work on Vista/7) and the
-source code is available in the GitHub repository [10] (there's also a Batch
-script [11] with compile instructions).
-
 ===============================================================================
                                        *shell-other-full-screen-implementations*
 Other full-screen implementations ~
 
-After publishing this plug-in I found that the Vim plug-ins VimTweak [12] and
-gvimfullscreen_win32 [13] also implement full-screen on Windows using a
+After publishing this plug-in I found that the Vim plug-ins VimTweak [13] and
+gvimfullscreen_win32 [14] also implement full-screen on Windows using a
 similar approach as my plug-in. I prefer the effect of my plug-in because it
 seems to hide window decorations more effectively. Also note that my plug-in
 was developed independently of the other two.
@@ -276,32 +284,34 @@ Contact ~
 If you have questions, bug reports, suggestions, etc. the author can be
 contacted at peter@peterodding.com. The latest version is available at
 http://peterodding.com/code/vim/shell/ and http://github.com/xolox/vim-shell.
-If you like the plug-in please vote for it on Vim Online [9].
+If you like the plug-in please vote for it on Vim Online [15].
 
 ===============================================================================
                                                                  *shell-license*
 License ~
 
-This software is licensed under the MIT license [14]. ÂŠ 2013 Peter Odding
-<peter@peterodding.com>.
+This software is licensed under the MIT license [16]. Copyright 2013 Peter
+Odding <peter@peterodding.com>.
 
 ===============================================================================
                                                               *shell-references*
 References ~
 
 [1] http://peterodding.com/code/vim/shell/screenshots/
-[2] http://peterodding.com/code/vim/open-associated-programs/
-[3] http://peterodding.com/code/vim/easytags/
-[4] http://en.wikipedia.org/wiki/Dynamic-link_library
-[5] http://en.wikipedia.org/wiki/Taskbar
-[6] http://peterodding.com/code/vim/session
-[7] http://en.wikipedia.org/wiki/Ctags
-[8] http://peterodding.com/code/vim/downloads/shell.zip
-[9] http://www.vim.org/scripts/script.php?script_id=3123
-[10] http://github.com/xolox/vim-shell
-[11] http://github.com/xolox/vim-shell/blob/master/dll/Makefile
-[12] http://www.vim.org/scripts/script.php?script_id=687
-[13] http://www.vim.org/scripts/script.php?script_id=2596
-[14] http://en.wikipedia.org/wiki/MIT_License
+[2] http://peterodding.com/code/vim/easytags/
+[3] http://en.wikipedia.org/wiki/Dynamic-link_library
+[4] http://peterodding.com/code/vim/downloads/shell.zip
+[5] http://peterodding.com/code/vim/downloads/misc.zip
+[6] http://www.vim.org/scripts/script.php?script_id=2332
+[7] https://github.com/gmarik/vundle
+[8] http://github.com/xolox/vim-shell
+[9] http://github.com/xolox/vim-misc
+[10] http://en.wikipedia.org/wiki/Taskbar
+[11] http://peterodding.com/code/vim/session/
+[12] http://en.wikipedia.org/wiki/Ctags
+[13] http://www.vim.org/scripts/script.php?script_id=687
+[14] http://www.vim.org/scripts/script.php?script_id=2596
+[15] http://www.vim.org/scripts/script.php?script_id=3123
+[16] http://en.wikipedia.org/wiki/MIT_License
 
 vim: ft=help
