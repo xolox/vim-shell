@@ -82,7 +82,7 @@ static const char *execute(char *command, int wait) /* {{{1 */
 				 	&& GetExitCodeProcess(pi.hProcess, &exit_code)
 				 	&& CloseHandle(pi.hProcess)
 					&& CloseHandle(pi.hThread)
-					&& sprintf(rv, "exit_code=%li", exit_code)) {
+					&& sprintf(rv, "exit_code=%u", exit_code)) {
 				return Success(rv);
 			}
 		}
