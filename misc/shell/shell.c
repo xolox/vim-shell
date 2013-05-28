@@ -65,6 +65,7 @@ static const char *Failure(const char *result) /* {{{1 */
 	return result;
 }
 
+char rv[500];
 static const char *execute(char *command, int wait) /* {{{1 */
 {
 	STARTUPINFO si;
@@ -76,7 +77,6 @@ static const char *execute(char *command, int wait) /* {{{1 */
 		if (!wait) {
 			return Success(NULL);
 		} else {
-			char rv[500];
 			DWORD exit_code;
 			if (WaitForSingleObject(pi.hProcess, INFINITE) != WAIT_FAILED
 				 	&& GetExitCodeProcess(pi.hProcess, &exit_code)
