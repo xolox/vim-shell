@@ -20,7 +20,7 @@
  * This should create the dynamic link library "shell.dll" which you can call
  * from Vim using for example :call libcall('c:/shell.dll', 'fullscreen', 'enable').
  *
- * Happy vimming!
+ * Happy Vimming!
  *
  *  - Peter Odding <peter@peterodding.com>
  */
@@ -33,8 +33,9 @@
 #include <stdio.h>
 #include <shellapi.h> /* ShellExecute? */
 
-/* Dynamic strings are returned using a static buffer to avoid memory leaks */
-static char buffer[1024 * 10];
+/* Dynamic strings are returned using static buffers to avoid memory leaks. */
+static char message_buffer[1024 * 10];
+static char rv_buffer[512];
 
 #undef MessageBox
 #define MessageBox(message) MessageBoxA(NULL, message, "Vim Library", 0)
@@ -44,13 +45,13 @@ static const char *GetError(void) /* {{{1 */
 	size_t i;
 
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), 0, buffer, sizeof buffer, NULL);
-	i = strlen(buffer);
-	while (i >= 2 && isspace(buffer[i-2])) {
-		buffer[i-2] = '\0';
+			NULL, GetLastError(), 0, message_buffer, sizeof message_buffer, NULL);
+	i = strlen(message_buffer);
+	while (i >= 2 && isspace(message_buffer[i-2])) {
+		message_buffer[i-2] = '\0';
 		i--;
 	}
-	return buffer;
+	return message_buffer;
 }
 
 static const char *Success(const char *result) /* {{{1 */
@@ -76,14 +77,13 @@ static const char *execute(char *command, int wait) /* {{{1 */
 		if (!wait) {
 			return Success(NULL);
 		} else {
-			char rv[500];
 			DWORD exit_code;
 			if (WaitForSingleObject(pi.hProcess, INFINITE) != WAIT_FAILED
 				 	&& GetExitCodeProcess(pi.hProcess, &exit_code)
 				 	&& CloseHandle(pi.hProcess)
 					&& CloseHandle(pi.hThread)
-					&& sprintf(rv, "exit_code=%u", exit_code)) {
-				return Success(rv);
+					&& sprintf(rv_buffer, "exit_code=%u", exit_code)) {
+				return Success(rv_buffer);
 			}
 		}
 	}
