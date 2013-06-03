@@ -1,12 +1,11 @@
-*shell.txt*  Improved integration between Vim and its environment
+*shell.txt*  Improved integration between  Vim and its environment
 
 ===============================================================================
-                                                                *shell-contents*
 Contents ~
 
- 1. Introduction                                            |shell-introduction|
- 2. Installation                                            |shell-installation|
- 3. Usage (commands & functions)              |shell-usage-(commands-functions)|
+ 1. Introduction                                           |shell-introduction|
+ 2. Installation                                           |shell-installation|
+ 3. Usage (commands & functions)                                  |shell-usage|
   1. The |:Maximize| command
   2. The |:Fullscreen| command
   3. The |:Open| command
@@ -18,48 +17,49 @@ Contents ~
   9. The |g:shell_fullscreen_always_on_top| option
   10. The |g:shell_mappings_enabled| option
   11. The |g:shell_verify_urls| option
- 4. Background                                                |shell-background|
- 5. Other full-screen implementations  |shell-other-full-screen-implementations|
- 6. Contact                                                      |shell-contact|
- 7. License                                                      |shell-license|
+ 4. Background                                               |shell-background|
+ 5. Other full-screen implementations |shell-other-full-screen-implementations|
+ 6. Contact                                                     |shell-contact|
+ 7. License                                                     |shell-license|
+ 8. References                                               |shell-references|
 
 ===============================================================================
-                                                            *shell-introduction*
+                                                           *shell-introduction*
 Introduction ~
 
 This plug-in aims to improve the integration between Vim and its environment
 (your operating system) by providing the following functionality:
 
- - The |:Fullscreen| command and '<F11>' mapping toggle Vim between normal and
-   full-screen mode (see the screenshots [1]). To invoke this functionality
-   without using the |:Fullscreen| command see the 'xolox#shell#fullscreen()'
-   and 'xolox#shell#is_fullscreen()' functions.
+- The |:Fullscreen| command and '<F11>' mapping toggle Vim between normal and
+  full-screen mode (see the screenshots [1]). To invoke this functionality
+  without using the |:Fullscreen| command see the |xolox#shell#fullscreen()|
+  and |xolox#shell#is_fullscreen()| functions.
 
- - The |:Maximize| command and '<Control-F11>' mapping toggle Vim between
-   normal and maximized state: They show/hide Vim's menu bar, tool bar and/or
-   tab line without hiding the operating system task bar.
+- The |:Maximize| command and '<Control-F11>' mapping toggle Vim between
+  normal and maximized state: They show/hide Vim's menu bar, tool bar and/or
+  tab line without hiding the operating system task bar.
 
- - The |:Open| command and '<F6>' mapping know how to open file and directory
-   names, URLs and e-mail addresses in your favorite programs (file manager,
-   web browser, e-mail client, etc).
+- The |:Open| command and '<F6>' mapping know how to open file and directory
+  names, URLs and e-mail addresses in your favorite programs (file manager,
+  web browser, e-mail client, etc).
 
- - The 'xolox#misc#os#exec()' function enables other Vim plug-ins (like my
-   easytags.vim [2] plug-in) to execute external commands in the background
-   (i.e. asynchronously) without opening a command prompt window on Windows.
+- The |xolox#misc#os#exec()| function enables other Vim plug-ins (like my
+  easytags.vim [2] plug-in) to execute external commands in the background
+  (i.e. asynchronously) _without opening a command prompt window on Windows_.
 
 Two Windows DLL files [3] are included to perform these functions on Windows,
 while on UNIX external commands are used.
 
 ===============================================================================
-                                                            *shell-installation*
+                                                           *shell-installation*
 Installation ~
 
-Please note that the vim-shell plug-in requires my vim-misc plug-in which is
-separately distributed.
+_Please note that the vim-shell plug-in requires my vim-misc plug-in which is
+separately distributed._
 
-Unzip the most recent ZIP archives of the vim-shell [4] and vim-misc [5]
-plug-ins inside your Vim profile directory (usually this is '~/.vim' on UNIX
-and '%USERPROFILE%\vimfiles' on Windows), restart Vim and execute the command
+Unzip the most recent ZIP archives of the vim-shell [4] and vim-misc [5] plug-
+ins inside your Vim profile directory (usually this is '~/.vim' on UNIX and
+'%USERPROFILE%\vimfiles' on Windows), restart Vim and execute the command
 ':helptags ~/.vim/doc' (use ':helptags ~\vimfiles\doc' instead on Windows).
 
 If you prefer you can also use Pathogen [6], Vundle [7] or a similar tool to
@@ -70,7 +70,7 @@ After you've installed the plug-in and restarted Vim, the following commands
 will be available to you:
 
 ===============================================================================
-                                              *shell-usage-(commands-functions)*
+                                                                  *shell-usage*
 Usage (commands & functions) ~
 
 -------------------------------------------------------------------------------
@@ -102,17 +102,16 @@ addresses. It's mapped to '<F6>' by default, see |g:shell_mappings_enabled| if
 you don't like this. You can provide a filename, URL or e-mail address as
 argument to the command or if there's a filename, URL or e-mail address under
 the text cursor that will be used. If both of those fail, the directory
-containing the current file will be opened. You can use the command as
-follows:
+containing the current file will be opened. You can use the command as follows:
 >
-    :Open http://www.vim.org/
-
+  :Open http://www.vim.org/
+<
 This will launch your preferred (or the best available) web browser. Likewise
 the following command will open your file manager in the directory of Vim's
 runtime files:
 >
-    :Open $VIMRUNTIME
-
+  :Open $VIMRUNTIME
+<
 Note that on UNIX if the environment variable '$DISPLAY' is empty the plug-in
 will fall back to a command-line web browser. Because such web browsers are
 executed in front of Vim you have to quit the web browser to return to Vim.
@@ -134,15 +133,15 @@ for |v:shell_error|.
 The *xolox#misc#os#exec()* function
 
 This function enables other Vim plug-ins to execute external commands in the
-background (i.e. asynchronously) without opening a command prompt window on
-Windows. For example try to execute the following command on Windows
+background (i.e. asynchronously) _without opening a command prompt window on
+Windows_. For example try to execute the following command on Windows
 (vimrun.exe (see |win32-vimrun|) is only included with Vim for Windows because
 it isn't needed on other platforms):
 >
-    :call xolox#misc#os#exec({'command': 'vimrun', 'async': 1})
-
+  :call xolox#misc#os#exec({'command': 'vimrun', 'async': 1})
+<
 Immediately after executing this command Vim will respond to input again
-because 'xolox#misc#os#exec()' doesn't wait for the external command to finish
+because |xolox#misc#os#exec()| doesn't wait for the external command to finish
 when the 'async' argument is true (1). In addition no command prompt window
 will be shown which means vimrun.exe (see |win32-vimrun|) is running completely
 invisible in the background.
@@ -151,22 +150,23 @@ The function returns a dictionary of return values. In asynchronous mode the
 dictionary is empty. In synchronous mode it contains the following key/value
 pairs:
 >
-    :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42'})
-    {'exit_code': 42, 'stdout': ['this is stdout'], 'stderr': ['this is stderr']}
-
+  :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42'})
+  {'exit_code': 42, 'stdout': ['this is stdout'], 'stderr': ['this is stderr']}
+<
 If you want to verify that this function works as described, execute the
 command mentioning 'vimrun' above, open the Windows task manager by pressing
-'Control-Shift-Escape' and check that the process 'vimrun.exe' is listed in
-the processes tab. If you don't see the problem this is solving, try executing
-vimrun.exe (see |win32-vimrun|) using Vim's built-in |system()| function instead:
+'Control-Shift-Escape' and check that the process 'vimrun.exe' is listed in the
+processes tab. If you don't see the problem this is solving, try executing
+vimrun.exe (see |win32-vimrun|) using Vim's built-in |system()| function
+instead:
 >
-    :call system('vimrun')
-
+  :call system('vimrun')
+<
 Vim will be completely unresponsive until you "press any key to continue" in
 the command prompt window that's running vimrun.exe (see |win32-vimrun|). Of
-course the |system()| function should only be used with non-interactive programs
-(the documentation says as much) but the point is to simulate an external
-command that takes a while to finish and blocks Vim while doing so.
+course the |system()| function should only be used with non-interactive
+programs (the documentation says as much) but the point is to simulate an
+external command that takes a while to finish and blocks Vim while doing so.
 
 Note that on Windows this function uses Vim's |'shell'| and |'shellcmdflag'|
 options to compose the command line passed to the DLL.
@@ -189,16 +189,14 @@ The *g:shell_fullscreen_items* option
 This variable is a string containing any combination of the following
 characters:
 
- - 'm': Hide the main menu (see |'go-m'|) when switching to full-screen;
+- 'm': Hide the main menu (see |'go-m'|) when switching to full-screen;
+- 'T': Hide the toolbar (see |'go-T'|) when switching to full-screen;
+- 'e': Hide the tabline (see |'go-e'|) when switching to full-screen (this
+  also toggles the showtabline option (see |'showtabline'|)).
 
- - 'T': Hide the toolbar (see |'go-T'|) when switching to full-screen;
-
- - 'e': Hide the tabline (see |'go-e'|) when switching to full-screen (this also
-   toggles the showtabline option (see |'showtabline'|)).
-
-By default all the above items are hidden in full-screen mode. You can also
-set the buffer local variable 'b:shell_fullscreen_items' to change these
-settings for specific buffers.
+By default all the above items are hidden in full-screen mode. You can also set
+the buffer local variable 'b:shell_fullscreen_items' to change these settings
+for specific buffers.
 
 -------------------------------------------------------------------------------
 The *g:shell_fullscreen_always_on_top* option
@@ -208,30 +206,30 @@ Some people don't like this which is why this option was added. Its default
 value is true (1) so to disable the "always on top" feature you would add this
 to your |vimrc| script:
 >
-    :let g:shell_fullscreen_always_on_top = 0
-
+  :let g:shell_fullscreen_always_on_top = 0
+<
 -------------------------------------------------------------------------------
 The *g:shell_mappings_enabled* option
 
 If you don't like the default mappings for the |:Open| and |:Fullscreen|
 commands then add the following to your |vimrc| script:
 >
-    :let g:shell_mappings_enabled = 0
-
+  :let g:shell_mappings_enabled = 0
+<
 Since no mappings will be defined now you can add something like the following
 to your |vimrc| script:
 >
-    :inoremap <Leader>fs <C-o>:Fullscreen<CR>
-    :nnoremap <Leader>fs :Fullscreen<CR>
-    :inoremap <Leader>op <C-o>:Open<CR>
-    :nnoremap <Leader>op :Open<CR>
-
+  :inoremap <Leader>fs <C-o>:Fullscreen<CR>
+  :nnoremap <Leader>fs :Fullscreen<CR>
+  :inoremap <Leader>op <C-o>:Open<CR>
+  :nnoremap <Leader>op :Open<CR>
+<
 -------------------------------------------------------------------------------
 The *g:shell_verify_urls* option
 
 When you use the |:Open| command or the '<F6>' mapping to open the URL under
-the text cursor, the shell plug-in uses a regular expression to guess where
-the URL starts and ends. This works 99% percent of the time but it can break,
+the text cursor, the shell plug-in uses a regular expression to guess where the
+URL starts and ends. This works 99% percent of the time but it can break,
 because in this process the shell plug-in will strip trailing punctuation
 characters like dots (because they were likely not intended to be included in
 the URL).
@@ -239,14 +237,14 @@ the URL).
 If you actually deal with URLs that include significant trailing punctuation
 and your Vim is compiled with Python support you can enable the option
 |g:shell_verify_urls| (by setting it to 1 in your |vimrc| script). When you do
-this the plug-in will perform an HTTP HEAD request on the URL without
-stripping trailing punctuation. If the request returns an HTTP status code
-that indicates some form of success (the status code is at least 200 and less
-than 400) the URL including trailing punctuation is opened. If the HEAD
-request fails the plug-in will try again without trailing punctuation.
+this the plug-in will perform an HTTP HEAD request on the URL without stripping
+trailing punctuation. If the request returns an HTTP status code that indicates
+some form of success (the status code is at least 200 and less than 400) the
+URL including trailing punctuation is opened. If the HEAD request fails the
+plug-in will try again without trailing punctuation.
 
 ===============================================================================
-                                                              *shell-background*
+                                                             *shell-background*
 Background ~
 
 Vim has a limited ability to call external libraries using the Vim script
@@ -257,28 +255,28 @@ useful functions, e.g. 'openurl()' to launch the default web browser and
 'execute()' which works like Vim's |system()| function but doesn't wait for the
 process to finish and doesn't show a command prompt.
 
-Since then I switched to Linux and didn't look back, which meant the DLL sat
-in my '~/.vim/etc/' waiting to be revived. Now that I've published my
-easytags.vim [2] plug-in and put a lot of effort into making it Windows
-compatible, the 'execute()' function from the DLL would be very useful to run
-Exuberant Ctags [12] in the background without stealing Vim's focus by opening
-a command prompt window. This is why I've decided to release the DLL. Because
-I switched to Linux I've also added an autoload script that wraps the DLL on
-Windows and calls out to external programs such as 'wmctrl', 'gnome-open',
-'kde-open', and others on UNIX.
+Since then I switched to Linux and didn't look back, which meant the DLL sat in
+my '~/.vim/etc/' waiting to be revived. Now that I've published my easytags.vim
+[2] plug-in and put a lot of effort into making it Windows compatible, the
+'execute()' function from the DLL would be very useful to run Exuberant Ctags
+[12] in the background without stealing Vim's focus by opening a command prompt
+window. This is why I've decided to release the DLL. Because I switched to
+Linux I've also added an autoload script that wraps the DLL on Windows and
+calls out to external programs such as 'wmctrl', 'gnome-open', 'kde-open', and
+others on UNIX.
 
 ===============================================================================
-                                       *shell-other-full-screen-implementations*
+                                      *shell-other-full-screen-implementations*
 Other full-screen implementations ~
 
 After publishing this plug-in I found that the Vim plug-ins VimTweak [13] and
-gvimfullscreen_win32 [14] also implement full-screen on Windows using a
-similar approach as my plug-in. I prefer the effect of my plug-in because it
-seems to hide window decorations more effectively. Also note that my plug-in
-was developed independently of the other two.
+gvimfullscreen_win32 [14] also implement full-screen on Windows using a similar
+approach as my plug-in. I prefer the effect of my plug-in because it seems to
+hide window decorations more effectively. Also note that my plug-in was
+developed independently of the other two.
 
 ===============================================================================
-                                                                 *shell-contact*
+                                                                *shell-contact*
 Contact ~
 
 If you have questions, bug reports, suggestions, etc. the author can be
@@ -287,14 +285,14 @@ http://peterodding.com/code/vim/shell/ and http://github.com/xolox/vim-shell.
 If you like the plug-in please vote for it on Vim Online [15].
 
 ===============================================================================
-                                                                 *shell-license*
+                                                                *shell-license*
 License ~
 
-This software is licensed under the MIT license [16]. Copyright 2013 Peter
-Odding <peter@peterodding.com>.
+This software is licensed under the MIT license [16]. © 2013 Peter Odding
+<peter@peterodding.com>.
 
 ===============================================================================
-                                                              *shell-references*
+                                                             *shell-references*
 References ~
 
 [1] http://peterodding.com/code/vim/shell/screenshots/

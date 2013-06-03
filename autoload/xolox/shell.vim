@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: May 28, 2013
+" Last Change: June 3, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.9'
+let g:xolox#shell#version = '0.12.10'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -121,7 +121,19 @@ endfunction
 function! xolox#shell#execute_with_dll(cmd, async) " {{{1
   " Execute external commands on Windows using the compiled DLL.
   let fn = 'execute_' . (a:async ? 'a' : '') . 'synchronous'
-  let cmd = &shell . ' ' . &shellcmdflag . ' ' . a:cmd
+  " Command line parsing on Windows is batshit insane. I intended to define
+  " exactly how it happens here, but the Microsoft documentation can't even
+  " explain it properly, so I won't bother either. Suffice to say that the
+  " outer double quotes with unescaped double quotes in between are
+  " intentional... Here's a small excerpt from "help cmd":
+  "
+  "   Otherwise, old behavior is to see if the first character is a quote
+  "   character and if so, strip the leading character and remove the last
+  "   quote character on the command line, preserving any text after the last
+  "   quote character.
+  "
+  let cmd = printf('cmd.exe /c "%s"', a:cmd)
+  call xolox#misc#msg#debug("shell.vim %s: Executing external command: %s", g:xolox#shell#version, cmd)
   let result = s:library_call(fn, cmd)
   if result =~ '^exit_code=\d\+$'
     return matchstr(result, '^exit_code=\zs\d\+$') + 0
