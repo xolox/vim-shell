@@ -162,10 +162,12 @@ function! xolox#shell#make(bang, args) " {{{1
 endfunction
 
 function! s:make_cmd(command)
+  doautocmd QuickFixCmdPre make,lmake
   let command = a:command . ' 2>&1'
   let result = xolox#misc#os#exec({'command': command, 'check': 0})
   let g:xolox#shell#make_exit_code = result['exit_code']
   return join(result['stdout'], "\n")
+  doautocmd QuickFixCmdPost make,lmake
 endfunction
 
 if !exists('g:xolox#shell#make_exit_code')
