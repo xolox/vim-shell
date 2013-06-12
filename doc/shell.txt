@@ -121,13 +121,19 @@ The *:MakeWithShell* command
 
 This command is a very simple replacement for the |:make| command that does not
 pop up a console window on Windows. It doesn't come with all of the bells and
-whistles that Vim's built-in make command does but it should work.
+whistles that Vim's built-in make command does but it should work. It properly
+triggers the |QuickFixCmdPre| and |QuickFixCmdPost| events, although it does so
+using |:silent| to avoid printing two "No matching autocommands" messages.
 
 Because Vim's |v:shell_error| variable is read only (which means it cannot be
 set by a Vim plug-in) the vim-shell plug-in defines its own variable with the
 exit code of the 'make' process executed by |:MakeWithShell|. This variable is
 called 'g:xolox#shell#make_exit_code'. The semantics are exactly the same as
 for |v:shell_error|.
+
+The |:MakeWithShell| command uses Vim's |quickfix| window. To make the shell
+plug-in use the |location-list| instead you can use the command
+':LMakeWithShell' instead.
 
 -------------------------------------------------------------------------------
 The *xolox#misc#os#exec()* function

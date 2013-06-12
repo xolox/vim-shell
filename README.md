@@ -48,9 +48,11 @@ Note that on UNIX if the environment variable `$DISPLAY` is empty the plug-in wi
 
 ### The `:MakeWithShell` command
 
-This command is a very simple replacement for the [:make] [make] command that does not pop up a console window on Windows. It doesn't come with all of the bells and whistles that Vim's built-in make command does but it should work.
+This command is a very simple replacement for the [:make] [] command that does not pop up a console window on Windows. It doesn't come with all of the bells and whistles that Vim's built-in make command does but it should work. It properly triggers the [QuickFixCmdPre] [] and [QuickFixCmdPost] [] events, although it does so using [:silent] [] to avoid printing two "No matching autocommands" messages.
 
-Because Vim's [v:shell_error] [shell_error] variable is read only (which means it cannot be set by a Vim plug-in) the vim-shell plug-in defines its own variable with the exit code of the `make` process executed by `:MakeWithShell`. This variable is called `g:xolox#shell#make_exit_code`. The semantics are exactly the same as for [v:shell_error] [shell_error].
+Because Vim's [v:shell_error] [] variable is read only (which means it cannot be set by a Vim plug-in) the vim-shell plug-in defines its own variable with the exit code of the `make` process executed by `:MakeWithShell`. This variable is called `g:xolox#shell#make_exit_code`. The semantics are exactly the same as for [v:shell_error] [].
+
+The `:MakeWithShell` command uses Vim's [quickfix window] []. To make the shell plug-in use the [location-list] [] instead you can use the command `:LMakeWithShell` instead.
 
 ### The `xolox#misc#os#exec()` function
 
@@ -136,6 +138,8 @@ This software is licensed under the [MIT license] [mit].
 © 2013 Peter Odding &lt;<peter@peterodding.com>&gt;.
 
 
+[:make]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:make
+[:silent]: http://vimdoc.sourceforge.net/htmldoc/various.html#:silent
 [ctags]: http://en.wikipedia.org/wiki/Ctags
 [dll]: http://en.wikipedia.org/wiki/Dynamic-link_library
 [download-misc]: http://peterodding.com/code/vim/downloads/misc.zip
@@ -149,16 +153,19 @@ This software is licensed under the [MIT license] [mit].
 [gui]: http://vimdoc.sourceforge.net/htmldoc/gui.html#GUI
 [gvimfullscreen_win32]: http://www.vim.org/scripts/script.php?script_id=2596
 [libcall]: http://vimdoc.sourceforge.net/htmldoc/eval.html#libcall()
-[make]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:make
+[location-list]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#location-list
 [mit]: http://en.wikipedia.org/wiki/MIT_License
 [pathogen]: http://www.vim.org/scripts/script.php?script_id=2332
+[quickfix window]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
+[QuickFixCmdPost]: http://vimdoc.sourceforge.net/htmldoc/autocmd.html#QuickFixCmdPost
+[QuickFixCmdPre]: http://vimdoc.sourceforge.net/htmldoc/autocmd.html#QuickFixCmdPre
 [screenshots]: http://peterodding.com/code/vim/shell/screenshots/
 [sh_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shell%27
 [shcf_opt]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27shellcmdflag%27
-[shell_error]: http://vimdoc.sourceforge.net/htmldoc/eval.html#v:shell_error
 [stal]: http://vimdoc.sourceforge.net/htmldoc/options.html#%27showtabline%27
 [system]: http://vimdoc.sourceforge.net/htmldoc/eval.html#system()
 [taskbars]: http://en.wikipedia.org/wiki/Taskbar
+[v:shell_error]: http://vimdoc.sourceforge.net/htmldoc/eval.html#v:shell_error
 [vim-session]: http://peterodding.com/code/vim/session/
 [vim]: http://www.vim.org/
 [vim_scripts_entry]: http://www.vim.org/scripts/script.php?script_id=3123

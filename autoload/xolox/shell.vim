@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 3, 2013
+" Last Change: June , 2013
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.12.10'
+let g:xolox#shell#version = '0.13'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -146,28 +146,29 @@ function! xolox#shell#execute_with_dll(cmd, async) " {{{1
   endif
 endfunction
 
-function! xolox#shell#make(bang, args) " {{{1
+function! xolox#shell#make(mode, bang, args) " {{{1
   " Run :make silent (without a console window).
   let command = &makeprg
   if a:args =~ '\S'
     let command .= ' ' . a:args
   endif
-  call xolox#misc#msg#info("shell.vim %s: Running make command %s ..", g:xolox#shell#version, command)
+  call xolox#misc#msg#info("shell.vim %s: Running make command: %s", g:xolox#shell#version, command)
   if a:bang == '!'
-    cgetexpr s:make_cmd(command)
+    execute printf('%sgetexpr s:make_cmd(a:mode, command)', a:mode)
   else
-    cexpr s:make_cmd(command)
+    execute printf('%sexpr s:make_cmd(a:mode, command)', a:mode)
   endif
-  cwindow
+  execute a:mode . 'window'
 endfunction
 
-function! s:make_cmd(command)
-  doautocmd QuickFixCmdPre make,lmake
+function! s:make_cmd(mode, command)
+  let event = (a:mode == 'l') ? 'lmake' : 'make'
+  execute 'silent doautocmd QuickFixCmdPre' event
   let command = a:command . ' 2>&1'
   let result = xolox#misc#os#exec({'command': command, 'check': 0})
   let g:xolox#shell#make_exit_code = result['exit_code']
+  execute 'silent doautocmd QuickFixCmdPost' event
   return join(result['stdout'], "\n")
-  doautocmd QuickFixCmdPost make,lmake
 endfunction
 
 if !exists('g:xolox#shell#make_exit_code')
