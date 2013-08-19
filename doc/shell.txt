@@ -294,7 +294,7 @@ If you like the plug-in please vote for it on Vim Online [15].
                                                                 *shell-license*
 License ~
 
-This software is licensed under the MIT license [16]. © 2013 Peter Odding
+This software is licensed under the MIT license [16]. ÂŠ 2013 Peter Odding
 <peter@peterodding.com>.
 
 ===============================================================================

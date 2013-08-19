@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 12, 2013
+" Last Change: August 19, 2013
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -10,6 +10,20 @@
 if &cp || exists('g:loaded_shell')
   finish
 endif
+
+" Make sure vim-misc is installed. {{{1
+
+try
+  " The point of this code is to do something completely innocent while making
+  " sure the vim-misc plug-in is installed. We specifically don't use Vim's
+  " exists() function because it doesn't load auto-load scripts that haven't
+  " already been loaded yet (last tested on Vim 7.3).
+  call type(g:xolox#misc#version)
+catch
+  echomsg "Warning: The vim-shell plug-in requires the vim-misc plug-in which seems not to be installed! For more information please review the installation instructions in the readme (also available on the homepage and on GitHub). The vim-shell plug-in will now be disabled."
+  let g:loaded_shell = 1
+  finish
+endtry
 
 " Configuration defaults. {{{1
 
