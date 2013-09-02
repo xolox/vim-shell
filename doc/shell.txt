@@ -10,7 +10,7 @@ Contents ~
   2. The |:Fullscreen| command
   3. The |:Open| command
   4. The |:MakeWithShell| command
-  5. The |xolox#misc#os#exec()| function
+  5. The |xolox#shell#execute_with_dll()| function
   6. The |xolox#shell#fullscreen()| function
   7. The |xolox#shell#is_fullscreen()| function
   8. The |g:shell_fullscreen_items| option
@@ -43,7 +43,7 @@ This plug-in aims to improve the integration between Vim and its environment
   names, URLs and e-mail addresses in your favorite programs (file manager,
   web browser, e-mail client, etc).
 
-- The |xolox#misc#os#exec()| function enables other Vim plug-ins (like my
+- The 'xolox#misc#os#exec()' function enables other Vim plug-ins (like my
   easytags.vim [2] plug-in) to execute external commands in the background
   (i.e. asynchronously) _without opening a command prompt window on Windows_.
 
@@ -136,7 +136,12 @@ plug-in use the |location-list| instead you can use the command
 ':LMakeWithShell' instead.
 
 -------------------------------------------------------------------------------
-The *xolox#misc#os#exec()* function
+The *xolox#shell#execute_with_dll()* function
+
+The function |xolox#shell#execute_with_dll()| is used by 'xolox#misc#os#exec()'
+and shouldn't be called directly; instead please call 'xolox#misc#os#exec()'
+(this is what my plug-ins do). For this reason the remainder of the following
+text discusses the 'xolox#misc#os#exec()' function.
 
 This function enables other Vim plug-ins to execute external commands in the
 background (i.e. asynchronously) _without opening a command prompt window on
@@ -147,7 +152,7 @@ it isn't needed on other platforms):
   :call xolox#misc#os#exec({'command': 'vimrun', 'async': 1})
 <
 Immediately after executing this command Vim will respond to input again
-because |xolox#misc#os#exec()| doesn't wait for the external command to finish
+because 'xolox#misc#os#exec()' doesn't wait for the external command to finish
 when the 'async' argument is true (1). In addition no command prompt window
 will be shown which means vimrun.exe (see |win32-vimrun|) is running completely
 invisible in the background.
@@ -156,7 +161,7 @@ The function returns a dictionary of return values. In asynchronous mode the
 dictionary is empty. In synchronous mode it contains the following key/value
 pairs:
 >
-  :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42'})
+  :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42', 'check': 0})
   {'exit_code': 42, 'stdout': ['this is stdout'], 'stderr': ['this is stderr']}
 <
 If you want to verify that this function works as described, execute the

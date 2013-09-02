@@ -54,7 +54,9 @@ Because Vim's [v:shell_error] [] variable is read only (which means it cannot be
 
 The `:MakeWithShell` command uses Vim's [quickfix window] []. To make the shell plug-in use the [location-list] [] instead you can use the command `:LMakeWithShell` instead.
 
-### The `xolox#misc#os#exec()` function
+### The `xolox#shell#execute_with_dll()` function
+
+The function `xolox#shell#execute_with_dll()` is used by `xolox#misc#os#exec()` and shouldn't be called directly; instead please call `xolox#misc#os#exec()` (this is what my plug-ins do). For this reason the remainder of the following text discusses the `xolox#misc#os#exec()` function.
 
 This function enables other Vim plug-ins to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*. For example try to execute the following command on Windows ([vimrun.exe] [vimrun] is only included with Vim for Windows because it isn't needed on other platforms):
 
@@ -64,7 +66,7 @@ Immediately after executing this command Vim will respond to input again because
 
 The function returns a dictionary of return values. In asynchronous mode the dictionary is empty. In synchronous mode it contains the following key/value pairs:
 
-    :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42'})
+    :echo xolox#misc#os#exec({'command': 'echo "this is stdout" && echo "this is stderr" >&2 && exit 42', 'check': 0})
     {'exit_code': 42, 'stdout': ['this is stdout'], 'stderr': ['this is stderr']}
 
 If you want to verify that this function works as described, execute the command mentioning `vimrun` above, open the Windows task manager by pressing `Control-Shift-Escape` and check that the process `vimrun.exe` is listed in the processes tab. If you don't see the problem this is solving, try executing [vimrun.exe] [vimrun] using Vim's built-in [system()] [system] function instead:
