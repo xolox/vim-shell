@@ -233,6 +233,12 @@ function! xolox#shell#fullscreen() " {{{1
       if error != ''
         throw "shell.dll failed with: " . error
       endif
+    elseif has('macunix') && has('gui')
+      if !s:fullscreen_enabled
+        set fullscreen
+      else
+        set nofullscreen
+      endif
     elseif has('unix')
       if !executable('wmctrl')
         let msg = "Full-screen on UNIX requires the `wmctrl' program!"
