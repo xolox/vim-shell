@@ -48,7 +48,9 @@ This plug-in aims to improve the integration between Vim and its environment
   (i.e. asynchronously) _without opening a command prompt window on Windows_.
 
 Two Windows DLL files [3] are included to perform these functions on Windows,
-while on UNIX external commands are used.
+while on UNIX external commands are used. MacVim supports full-screen out of
+the box (and vim-shell knows how to enable it) but is otherwise treated as
+UNIX.
 
 ===============================================================================
                                                            *shell-installation*
@@ -299,7 +301,7 @@ If you like the plug-in please vote for it on Vim Online [15].
                                                                 *shell-license*
 License ~
 
-This software is licensed under the MIT license [16]. ÂŠ 2013 Peter Odding
+This software is licensed under the MIT license [16]. ÂŠ 2014 Peter Odding
 <peter@peterodding.com>.
 
 ===============================================================================

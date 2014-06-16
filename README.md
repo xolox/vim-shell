@@ -10,7 +10,7 @@ This plug-in aims to improve the integration between [Vim] [vim] and its environ
 
  * The `xolox#misc#os#exec()` function enables other Vim plug-ins (like my [easytags.vim] [easytags] plug-in) to execute external commands in the background (i.e. asynchronously) *without opening a command prompt window on Windows*.
 
-Two [Windows DLL files] [dll] are included to perform these functions on Windows, while on UNIX external commands are used.
+Two [Windows DLL files] [dll] are included to perform these functions on Windows, while on UNIX external commands are used. MacVim supports full-screen out of the box (and vim-shell knows how to enable it) but is otherwise treated as UNIX.
 
 ## Installation
 
@@ -136,8 +136,8 @@ If you have questions, bug reports, suggestions, etc. the author can be contacte
 
 ## License
 
-This software is licensed under the [MIT license] [mit].  
-© 2013 Peter Odding &lt;<peter@peterodding.com>&gt;.
+This software is licensed under the [MIT license] [mit].
+© 2014 Peter Odding &lt;<peter@peterodding.com>&gt;.
 
 
 [:make]: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:make

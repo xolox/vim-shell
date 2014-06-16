@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 2, 2013
+" Last Change: June 16, 2014
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.13.2'
+let g:xolox#shell#version = '0.13.3'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -232,6 +232,12 @@ function! xolox#shell#fullscreen() " {{{1
       let error = s:library_call('fullscreen', options)
       if error != ''
         throw "shell.dll failed with: " . error
+      endif
+    elseif has('macunix') && has('gui')
+      if !s:fullscreen_enabled
+        set fullscreen
+      else
+        set nofullscreen
       endif
     elseif has('unix')
       if !executable('wmctrl')
