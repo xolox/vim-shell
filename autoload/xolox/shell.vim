@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 16, 2014
+" Last Change: June 30, 2014
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.13.3'
+let g:xolox#shell#version = '0.13.4'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -373,8 +373,15 @@ function! xolox#shell#can_use_dll() " {{{1
   if xolox#misc#os#is_win()
     try
       call xolox#misc#msg#debug("shell.vim %s: Checking if compiled DDL is supported ..", g:xolox#shell#version)
-      return s:library_call('libversion', '') == '0.5'
+      let expected_version = '0.5'
+      let actual_version = s:library_call('libversion', '')
+      if actual_version == expected_version
+        call xolox#misc#msg#debug("shell.vim %s: Yes the DDL works. Good for you! :-)", g:xolox#shell#version)
+        return 1
+      endif
+      call xolox#misc#msg#debug("shell.vim %s: The DDL works but reports version %s while I was expecting %s!", g:xolox#shell#version, string(actual_version), string(expected_version))
     catch
+      call xolox#misc#msg#debug("shell.vim %s: Looks like the DDL is not working! (Vim raised an exception: %s)", g:xolox#shell#version, v:exception)
       return 0
     endtry
   endif
