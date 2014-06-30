@@ -17,6 +17,7 @@ Contents ~
   9. The |g:shell_fullscreen_always_on_top| option
   10. The |g:shell_mappings_enabled| option
   11. The |g:shell_verify_urls| option
+  12. The |g:shell_use_dll| option
  4. Background                                               |shell-background|
  5. Other full-screen implementations |shell-other-full-screen-implementations|
  6. Contact                                                     |shell-contact|
@@ -255,6 +256,12 @@ trailing punctuation. If the request returns an HTTP status code that indicates
 some form of success (the status code is at least 200 and less than 400) the
 URL including trailing punctuation is opened. If the HEAD request fails the
 plug-in will try again without trailing punctuation.
+
+-------------------------------------------------------------------------------
+The *g:shell_use_dll* option
+
+If you set this to false (0) the DDL is never used. This is very useful during
+testing :-).
 
 ===============================================================================
                                                              *shell-background*

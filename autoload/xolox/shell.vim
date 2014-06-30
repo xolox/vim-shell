@@ -3,7 +3,7 @@
 " Last Change: June 30, 2014
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.13.4'
+let g:xolox#shell#version = '0.13.5'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -373,6 +373,10 @@ function! xolox#shell#can_use_dll() " {{{1
   if xolox#misc#os#is_win()
     try
       call xolox#misc#msg#debug("shell.vim %s: Checking if compiled DDL is supported ..", g:xolox#shell#version)
+      if !xolox#misc#option#get('shell_use_dll', 1)
+        call xolox#misc#msg#debug("shell.vim %s: Use of DDL is disabled using 'g:shell_use_dll'.", g:xolox#shell#version)
+        return 0
+      endif
       let expected_version = '0.5'
       let actual_version = s:library_call('libversion', '')
       if actual_version == expected_version
