@@ -101,6 +101,10 @@ On Windows the `:Fullscreen` command sets the Vim window to "always on top". Som
 
     :let g:shell_fullscreen_always_on_top = 0
 
+### The `g:shell_fullscreen_message` option
+
+When you enter full screen the plug-in shows a Vim message explaining how to leave full screen. If you don't want to see this message you can set this option to false (0).
+
 ### The `g:shell_mappings_enabled` option
 
 If you don't like the default mappings for the `:Open` and `:Fullscreen` commands then add the following to your [vimrc script] [vimrc]:

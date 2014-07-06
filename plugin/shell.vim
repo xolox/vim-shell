@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 19, 2013
+" Last Change: July 7, 2014
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -42,6 +42,11 @@ if !exists('g:shell_verify_urls')
   " your Vim is compiled with Python support. XXX In this case the shell
   " plug-in will perform HTTP HEAD requests on your behalf.
   let g:shell_verify_urls = 0
+endif
+
+if !exists('g:shell_fullscreen_message')
+  " Set this to false (0) to disable the message when entering full screen.
+  let g:shell_fullscreen_message = 1
 endif
 
 " Automatic commands. {{{1

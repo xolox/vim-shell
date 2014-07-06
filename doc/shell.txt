@@ -15,9 +15,10 @@ Contents ~
   7. The |xolox#shell#is_fullscreen()| function
   8. The |g:shell_fullscreen_items| option
   9. The |g:shell_fullscreen_always_on_top| option
-  10. The |g:shell_mappings_enabled| option
-  11. The |g:shell_verify_urls| option
-  12. The |g:shell_use_dll| option
+  10. The |g:shell_fullscreen_message| option
+  11. The |g:shell_mappings_enabled| option
+  12. The |g:shell_verify_urls| option
+  13. The |g:shell_use_dll| option
  4. Background                                               |shell-background|
  5. Other full-screen implementations |shell-other-full-screen-implementations|
  6. Contact                                                     |shell-contact|
@@ -222,6 +223,13 @@ to your |vimrc| script:
 >
   :let g:shell_fullscreen_always_on_top = 0
 <
+-------------------------------------------------------------------------------
+The *g:shell_fullscreen_message* option
+
+When you enter full screen the plug-in shows a Vim message explaining how to
+leave full screen. If you don't want to see this message you can set this
+option to false (0).
+
 -------------------------------------------------------------------------------
 The *g:shell_mappings_enabled* option
 

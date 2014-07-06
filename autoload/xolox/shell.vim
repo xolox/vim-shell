@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 30, 2014
+" Last Change: July 7, 2014
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.13.5'
+let g:xolox#shell#version = '0.13.6'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -279,7 +279,7 @@ function! xolox#shell#fullscreen() " {{{1
   let s:fullscreen_enabled = !s:fullscreen_enabled
 
   " Let the user know how to leave full-screen mode?
-  if s:fullscreen_enabled
+  if s:fullscreen_enabled && g:shell_fullscreen_message
     " Take a moment to let Vim's GUI finish redrawing (:redraw is
     " useless here because it only redraws Vim's internal state).
     sleep 50 m
