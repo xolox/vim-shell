@@ -10,7 +10,19 @@ if !exists('s:fullscreen_enabled')
   let s:contact = "If you have suggestions, please contact peter@peterodding.com."
   let s:fullscreen_enabled = 0
   let s:maximized = 0
+  call xolox#shell#startup()
 endif
+
+function! xolox#shell#startup() " {{{1
+  if g:shell_maximize_on_startup && g:shell_fullscreen_on_startup
+    echoerr "shell_maximize_on_startup and shell_fullscreen_on_startup options shouldn't be both used at the same time! Maximize mode will be used."
+  endif
+  if g:shell_maximize_on_startup
+    call xolox#shell#maximize()
+  elseif g:shell_fullscreen_on_startup
+    call xolox#shell#fullscreen()
+  endif
+endfunction
 
 function! xolox#shell#open_cmd(arg) " {{{1
   " Implementation of the :Open command.
