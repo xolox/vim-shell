@@ -16,9 +16,11 @@ Contents ~
   8. The |g:shell_fullscreen_items| option
   9. The |g:shell_fullscreen_always_on_top| option
   10. The |g:shell_fullscreen_message| option
-  11. The |g:shell_mappings_enabled| option
-  12. The |g:shell_verify_urls| option
-  13. The |g:shell_use_dll| option
+  11. The |g:shell_fullscreen_on_startup| option
+  12. The |g:shell_maximize_on_startup| option
+  13. The |g:shell_mappings_enabled| option
+  14. The |g:shell_verify_urls| option
+  15. The |g:shell_use_dll| option
  4. Background                                               |shell-background|
  5. Other full-screen implementations |shell-other-full-screen-implementations|
  6. Contact                                                     |shell-contact|
@@ -223,6 +225,22 @@ to your |vimrc| script:
 >
   :let g:shell_fullscreen_always_on_top = 0
 <
+-------------------------------------------------------------------------------
+The *g:shell_fullscreen_on_startup* option
+
+If you want to automatically switch to fullscreen on startup, set this option
+to true (1) in your |vimrc| script:
+>
+  :let g:shell_fullscreen_on_startup = 1
+
+-------------------------------------------------------------------------------
+The *g:shell_maximize_on_startup* option
+
+If you want to automatically switch to maximize on startup, set this option
+to true (1) in your |vimrc| script:
+>
+  :let g:shell_maximize_on_startup = 1
+
 -------------------------------------------------------------------------------
 The *g:shell_fullscreen_message* option
 

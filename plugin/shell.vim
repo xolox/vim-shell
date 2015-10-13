@@ -49,6 +49,16 @@ if !exists('g:shell_fullscreen_message')
   let g:shell_fullscreen_message = 1
 endif
 
+if !exists('g:shell_fullscreen_on_startup')
+  " Set this to true (1) to enter full screen on startup.
+  let g:shell_fullscreen_on_startup = 0
+endif
+
+if !exists('g:shell_maximize_on_startup')
+  " Set this to true (1) to enter maximized screen on startup.
+  let g:shell_maximize_on_startup = 0
+endif
+
 " Automatic commands. {{{1
 
 augroup PluginShell
